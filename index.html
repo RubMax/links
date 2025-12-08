@@ -31,12 +31,17 @@
             background-color: #f5f7fa;
             color: #333;
             line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
         
         #setPage {
             max-width: 1400px;
             margin: 0 auto;
-            padding: 10px;
+            padding: 20px;
+            width: 100%;
+            flex: 1;
         }
         
         /* Header */
@@ -45,7 +50,7 @@
             color: white;
             padding: 25px 0;
             border-radius: 10px;
-            margin-bottom: 10px;
+            margin-bottom: 20px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
             text-align: center;
         }
@@ -53,23 +58,28 @@
         #conteneurEntete {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 0 10px;
+            padding: 0 20px;
         }
         
-       
-        
-        
+        .logo-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
         
         .logo-container h1 {
             font-size: 2.2rem;
             font-weight: 700;
             letter-spacing: 1px;
+            margin-bottom: 10px;
         }
         
         .logo-container p {
-            font-size: 1rem;
+            font-size: 1.1rem;
             opacity: 0.9;
-            max-width: 600px;
+            max-width: 700px;
+            line-height: 1.5;
         }
         
         /* Barre de navigation avec boutons */
@@ -77,7 +87,7 @@
             background-color: white;
             border-radius: 10px;
             padding: 15px;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
             box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
             display: flex;
             flex-wrap: wrap;
@@ -97,6 +107,9 @@
             display: flex;
             align-items: center;
             gap: 8px;
+            flex: 1;
+            min-width: 180px;
+            justify-content: center;
         }
         
         .nav-button:hover {
@@ -120,6 +133,7 @@
             display: flex;
             flex-direction: column;
             gap: 20px;
+            min-height: 400px;
         }
         
         /* Sections de contenu - TOUJOURS UNE SEULE VISIBLE */
@@ -162,12 +176,13 @@
         
         .section-content {
             padding: 25px;
+            min-height: 300px;
         }
         
         /* Grille des liens */
         .links-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
             gap: 15px;
         }
         
@@ -178,6 +193,7 @@
             transition: all 0.3s ease;
             border-left: 4px solid var(--secondary-color);
             position: relative;
+            height: 100%;
         }
         
         .link-card:hover {
@@ -194,6 +210,7 @@
             align-items: center;
             justify-content: space-between;
             width: 100%;
+            height: 100%;
         }
         
         .link-card a:hover {
@@ -248,255 +265,220 @@
         }
         
         /* Footer */
-      /* Footer professionnel */
-footer {
-    margin-top: 50px;
-    background: linear-gradient(135deg, #1a252f, #2c3e50);
-    color: #ecf0f1;
-    padding-top: 40px;
-}
+        footer {
+            background: linear-gradient(135deg, #1a252f, #2c3e50);
+            color: #ecf0f1;
+            padding-top: 40px;
+            margin-top: 40px;
+            width: 100%;
+        }
 
-#conteneurPied {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 20px;
-}
+        #conteneurPied {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
 
-.footer-content {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 40px;
-    margin-bottom: 40px;
-}
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
 
-.footer-column {
-    padding: 0 15px;
-}
+        .footer-column {
+            padding: 0 15px;
+        }
 
-.footer-logo {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    margin-bottom: 25px;
-}
-
-.footer-logo i {
-    font-size: 2.2rem;
-    color: #3498db;
-    background: rgba(52, 152, 219, 0.1);
-    padding: 15px;
-    border-radius: 10px;
-}
-
-.footer-logo h3 {
-    font-size: 1.6rem;
-    font-weight: 700;
-    color: #fff;
-}
-
-.contact-info p {
-    margin-bottom: 12px;
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
-    font-size: 0.95rem;
-    line-height: 1.5;
-}
-
-.contact-info i {
-    color: #3498db;
-    min-width: 20px;
-    margin-top: 3px;
-}
-
-.footer-column h4 {
-    color: #fff;
-    font-size: 1.2rem;
-    margin-bottom: 20px;
-    padding-bottom: 10px;
-    border-bottom: 2px solid rgba(52, 152, 219, 0.3);
-    position: relative;
-}
-
-.footer-column h4::after {
-    content: '';
-    position: absolute;
-    bottom: -2px;
-    left: 0;
-    width: 60px;
-    height: 2px;
-    background: #3498db;
-}
-
-.footer-links {
-    list-style: none;
-    padding: 0;
-}
-
-.footer-links li {
-    margin-bottom: 12px;
-}
-
-.footer-links a {
-    color: #bdc3c7;
-    text-decoration: none;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    transition: all 0.3s ease;
-    padding: 5px 0;
-}
-
-.footer-links a:hover {
-    color: #3498db;
-    transform: translateX(5px);
-}
-
-.footer-links i {
-    font-size: 0.8rem;
-    color: #3498db;
-}
-
-.opening-hours p {
-    margin-bottom: 10px;
-    padding: 8px 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.opening-hours strong {
-    color: #fff;
-    display: inline-block;
-    min-width: 120px;
-}
-
-.social-links {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
-    margin-top: 20px;
-}
-
-.social-btn {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 12px 15px;
-    border-radius: 8px;
-    text-decoration: none;
-    color: white;
-    font-weight: 500;
-    transition: all 0.3s ease;
-    border: none;
-}
-
-.social-btn i {
-    font-size: 1.2rem;
-}
-
-.social-btn.whatsapp {
-    background: linear-gradient(135deg, #25D366, #128C7E);
-}
-
-.social-btn.facebook {
-    background: linear-gradient(135deg, #1877F2, #0A5BC4);
-}
-
-.social-btn.youtube {
-    background: linear-gradient(135deg, #FF0000, #CC0000);
-}
-
-.social-btn.email {
-    background: linear-gradient(135deg, #EA4335, #D14836);
-}
-
-.social-btn:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-    opacity: 0.9;
-}
-
-/* Footer bottom */
-.footer-bottom {
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-    padding: 25px 0;
-    text-align: center;
-    background: rgba(0, 0, 0, 0.2);
-}
-
-.copyright p {
-    color: #95a5a6;
-    font-size: 0.9rem;
-    margin-bottom: 10px;
-}
-
-.legal-links {
-    margin-top: 15px;
-}
-
-.legal-links a {
-    color: #bdc3c7;
-    text-decoration: none;
-    margin: 0 10px;
-    font-size: 0.85rem;
-    transition: color 0.3s ease;
-}
-
-.legal-links a:hover {
-    color: #3498db;
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-    .footer-content {
-        grid-template-columns: 1fr;
-        gap: 30px;
-    }
-    
-    .footer-column {
-        padding: 0;
-    }
-    
-    .social-links {
-        grid-template-columns: repeat(4, 1fr);
-    }
-    
-    .legal-links a {
-        display: block;
-        margin: 5px 0;
-    }
-}
-
-@media (max-width: 480px) {
-    .social-links {
-        grid-template-columns: repeat(2, 1fr);
-    }
-    
-    .footer-logo {
-        flex-direction: column;
-        text-align: center;
-        gap: 10px;
-    }
-}
-        
-        .social-links {
+        .footer-logo {
             display: flex;
-            justify-content: center;
-            gap: 20px;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .footer-logo i {
+            font-size: 2.2rem;
+            color: #3498db;
+            background: rgba(52, 152, 219, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+        }
+
+        .footer-logo h3 {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .contact-info p {
+            margin-bottom: 12px;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .contact-info i {
+            color: #3498db;
+            min-width: 20px;
+            margin-top: 3px;
+        }
+
+        .footer-column h4 {
+            color: #fff;
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid rgba(52, 152, 219, 0.3);
+            position: relative;
+        }
+
+        .footer-column h4::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 60px;
+            height: 2px;
+            background: #3498db;
+        }
+
+        .footer-links {
+            list-style: none;
+            padding: 0;
+        }
+
+        .footer-links li {
+            margin-bottom: 12px;
+        }
+
+        .footer-links a {
+            color: #bdc3c7;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            padding: 5px 0;
+        }
+
+        .footer-links a:hover {
+            color: #3498db;
+            transform: translateX(5px);
+        }
+
+        .footer-links i {
+            font-size: 0.8rem;
+            color: #3498db;
+        }
+
+        .opening-hours p {
+            margin-bottom: 10px;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .opening-hours strong {
+            color: #fff;
+            display: inline-block;
+            min-width: 120px;
+        }
+
+        .social-links {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .social-btn {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 15px;
+            border-radius: 8px;
+            text-decoration: none;
+            color: white;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border: none;
+        }
+
+        .social-btn i {
+            font-size: 1.2rem;
+        }
+
+        .social-btn.whatsapp {
+            background: linear-gradient(135deg, #25D366, #128C7E);
+        }
+
+        .social-btn.facebook {
+            background: linear-gradient(135deg, #1877F2, #0A5BC4);
+        }
+
+        .social-btn.youtube {
+            background: linear-gradient(135deg, #FF0000, #CC0000);
+        }
+
+        .social-btn.email {
+            background: linear-gradient(135deg, #EA4335, #D14836);
+        }
+
+        .social-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            opacity: 0.9;
+        }
+
+        /* Footer bottom */
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 25px 0;
+            text-align: center;
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .copyright p {
+            color: #95a5a6;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+        }
+
+        .legal-links {
             margin-top: 15px;
         }
-        
-        .social-links a {
-            color: white;
-            font-size: 1.3rem;
-            transition: all 0.3s ease;
+
+        .legal-links a {
+            color: #bdc3c7;
+            text-decoration: none;
+            margin: 0 10px;
+            font-size: 0.85rem;
+            transition: color 0.3s ease;
         }
-        
-        .social-links a:hover {
-            color: var(--secondary-color);
-            transform: translateY(-3px);
+
+        .legal-links a:hover {
+            color: #3498db;
         }
-        
+
         /* Responsive */
+        @media (max-width: 1200px) {
+            .nav-button {
+                min-width: 160px;
+            }
+        }
+        
+        @media (max-width: 992px) {
+            .nav-button {
+                min-width: 140px;
+            }
+            
+            .links-grid {
+                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            }
+        }
+        
         @media (max-width: 768px) {
             .nav-container {
                 flex-direction: column;
@@ -504,7 +486,7 @@ footer {
             
             .nav-button {
                 width: 100%;
-                justify-content: center;
+                min-width: unset;
             }
             
             .links-grid {
@@ -514,6 +496,52 @@ footer {
             .logo-container h1 {
                 font-size: 1.8rem;
             }
+            
+            .footer-content {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+            
+            .footer-column {
+                padding: 0;
+            }
+            
+            .social-links {
+                grid-template-columns: repeat(4, 1fr);
+            }
+            
+            .legal-links a {
+                display: block;
+                margin: 5px 0;
+            }
+        }
+
+        @media (max-width: 480px) {
+            #setPage {
+                padding: 10px;
+            }
+            
+            .logo-container h1 {
+                font-size: 1.6rem;
+            }
+            
+            .logo-container p {
+                font-size: 1rem;
+            }
+            
+            .section-content {
+                padding: 15px;
+            }
+            
+            .social-links {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .footer-logo {
+                flex-direction: column;
+                text-align: center;
+                gap: 10px;
+            }
         }
     </style>
 </head>
@@ -522,11 +550,11 @@ footer {
         <!-- Header -->
         <header>
             <div id="conteneurEntete">
-                    <i class="fas"></i>
+                <div class="logo-container">
                     <h1>RubMax Servicos</h1>
                     <p>Votre portail unique pour tous les services en ligne fédéraux, migratoires et utilitaires</p>
                 </div>
-             </div>
+            </div>
         </header>
 
         <!-- Barre de navigation -->
@@ -552,7 +580,6 @@ footer {
             <button class="nav-button" data-target="pj">
                 <i class="fas fa-briefcase"></i> Entreprise (PJ)
             </button>
-            
             <button class="nav-button" data-target="rubmax">
                 <i class="fas fa-user-tie"></i> RubMax
             </button>
@@ -560,9 +587,81 @@ footer {
 
         <!-- Contenu principal - UNE SEULE SECTION VISIBLE À LA FOIS -->
         <div class="main-container">
+            <!-- Section Utilitaires -->
+            <section id="utiles" class="content-section active">
+                <div class="section-header">
+                    <i class="fas fa-tools"></i>
+                    <h2>Utilitaires en Ligne</h2>
+                </div>
+                <div class="section-content">
+                    <div class="links-grid">
+                        <div class="link-card">
+                            <a href="https://script.google.com/macros/s/AKfycbzDa0WONITev7GJhplsixNzIFfDBxsRwGWxO4d--9w94bxpNDgC0amGEHTuAOOnK92LUw/exec" target="_blank">
+                                <span>Gestion Colis</span>
+                                <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </div>
+                        <div class="link-card">
+                            <a href="https://writer.zoho.com/writer/documents" target="_blank">
+                                <span>WORD en ligne</span>
+                                <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </div>
+                        <div class="link-card">
+                            <a href="https://www.ilovepdf.com/pt" target="_blank">
+                                <span>iLovePDF</span>
+                                <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </div>
+                        <div class="link-card">
+                            <a href="https://www.pdfescape.com/fr/" target="_blank">
+                                <span>PDF Scape</span>
+                                <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </div>
+                        <div class="link-card">
+                            <a href="https://bitly.com/" target="_blank">
+                                <span>BITLY (raccourcisseur d'URL)</span>
+                                <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </div>
+                        <div class="link-card">
+                            <a href="https://lightpdf.com/pdf-to-txt" target="_blank">
+                                <span>LightPDF (PDF vers texte)</span>
+                                <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </div>
+                        <div class="link-card">
+                            <a href="https://yt5s.com/en38/youtube-to-mp3" target="_blank">
+                                <span>YouTube vers MP3</span>
+                                <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </div>
+                        <div class="link-card">
+                            <a href="https://pt.idphoto4you.com/" target="_blank">
+                                <span>Photo 3x4</span>
+                                <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </div>
+                        <div class="link-card">
+                            <a href="https://www.gov.br/pt-br" target="_blank">
+                                <span>Gov.br (Portail gouvernemental)</span>
+                                <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </div>
+                        <div class="link-card">
+                            <a href="https://www.gerarpix.com.br/" target="_blank">
+                                <span>Créer QR CODE</span>
+                                <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </section>
             
+            <!-- Les autres sections restent inchangées -->
             <!-- Section Services Fédéraux -->
-            <section id="federal" class="content-section active">
+            <section id="federal" class="content-section">
                 <div class="section-header">
                     <i class="fas fa-landmark"></i>
                     <h2>Services Fédéraux</h2>
@@ -880,78 +979,6 @@ footer {
                 </div>
             </section>
             
-            <!-- Section Utilitaires -->
-            <section id="utiles" class="content-section">
-                <div class="section-header">
-                    <i class="fas fa-tools"></i>
-                    <h2>Utilitaires en Ligne</h2>
-                </div>
-                <div class="section-content">
-                    <div class="links-grid">
-                         <div class="link-card">
-                            <a href="https://script.google.com/macros/s/AKfycbzDa0WONITev7GJhplsixNzIFfDBxsRwGWxO4d--9w94bxpNDgC0amGEHTuAOOnK92LUw/exec" target="_blank">
-                                <span>Gestion Colis</span>
-                                <i class="fas fa-external-link-alt"></i>
-                            </a>
-                        </div>
-                        <div class="link-card">
-                            <a href="https://writer.zoho.com/writer/documents" target="_blank">
-                                <span>WORD en ligne</span>
-                                <i class="fas fa-external-link-alt"></i>
-                            </a>
-                        </div>
-                        <div class="link-card">
-                            <a href="https://www.ilovepdf.com/pt" target="_blank">
-                                <span>iLovePDF</span>
-                                <i class="fas fa-external-link-alt"></i>
-                            </a>
-                        </div>
-                        <div class="link-card">
-                            <a href="https://www.pdfescape.com/fr/" target="_blank">
-                                <span>PDF Scape</span>
-                                <i class="fas fa-external-link-alt"></i>
-                            </a>
-                        </div>
-                        <div class="link-card">
-                            <a href="https://bitly.com/" target="_blank">
-                                <span>BITLY (raccourcisseur d'URL)</span>
-                                <i class="fas fa-external-link-alt"></i>
-                            </a>
-                        </div>
-                        <div class="link-card">
-                            <a href="https://lightpdf.com/pdf-to-txt" target="_blank">
-                                <span>LightPDF (PDF vers texte)</span>
-                                <i class="fas fa-external-link-alt"></i>
-                            </a>
-                        </div>
-                        <div class="link-card">
-                            <a href="https://yt5s.com/en38/youtube-to-mp3" target="_blank">
-                                <span>YouTube vers MP3</span>
-                                <i class="fas fa-external-link-alt"></i>
-                            </a>
-                        </div>
-                        <div class="link-card">
-                            <a href="https://pt.idphoto4you.com/" target="_blank">
-                                <span>Photo 3x4</span>
-                                <i class="fas fa-external-link-alt"></i>
-                            </a>
-                        </div>
-                        <div class="link-card">
-                            <a href="https://www.gov.br/pt-br" target="_blank">
-                                <span>Gov.br (Portail gouvernemental)</span>
-                                <i class="fas fa-external-link-alt"></i>
-                            </a>
-                        </div>
-                        <div class="link-card">
-                            <a href="https://www.gerarpix.com.br/" target="_blank">
-                                <span>Créer QR CODE</span>
-                                <i class="fas fa-external-link-alt"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </section>
-            
             <!-- Section RubMax -->
             <section id="rubmax" class="content-section">
                 <div class="section-header">
@@ -1007,85 +1034,85 @@ footer {
                 </div>
             </section>
         </div>
+    </div>
 
-        <!-- Footer -->
-        <footer>
-    <div id="conteneurPied">
-        <div class="footer-content">
-            <!-- Colonne 1 : Informations de contact -->
-            <div class="footer-column">
-                <div class="footer-logo">
-                    <i class="fas fa-globe-americas"></i>
-                    <h3>RubMax Servicos</h3>
-                </div>
-                <div class="contact-info">
-                    <p><i class="fas fa-map-marker-alt"></i> Av. Bento Guelfi, 1260</p>
-                    <p>Jardim das Laranjeiras</p>
-                    <p>São Paulo - SP, CEP: 08381-001</p>
-                    <p><i class="fas fa-phone"></i> +55 (11) 99999-9999</p>
-                    <p><i class="fas fa-envelope"></i> contato@rubmax.com.br</p>
-                    <p><i class="fas fa-file-contract"></i> CNPJ: 40.082.272/0001-00</p>
-                </div>
-            </div>
-            
-            <!-- Colonne 2 : Liens rapides -->
-            <div class="footer-column">
-                <h4>Liens Rapides</h4>
-                <ul class="footer-links">
-                    <li><a href="#federal"><i class="fas fa-chevron-right"></i> Services Fédéraux</a></li>
-                    <li><a href="#rne"><i class="fas fa-chevron-right"></i> RNE / Migrations</a></li>
-                    <li><a href="#boletos"><i class="fas fa-chevron-right"></i> Factures & Boletos</a></li>
-                    <li><a href="#hospital"><i class="fas fa-chevron-right"></i> Services de Santé</a></li>
-                    <li><a href="#pj"><i class="fas fa-chevron-right"></i> Services Entreprise</a></li>
-                    <li><a href="#utiles"><i class="fas fa-chevron-right"></i> Utilitaires</a></li>
-                </ul>
-            </div>
-            
-            <!-- Colonne 3 : Horaires & Réseaux sociaux -->
-            <div class="footer-column">
-                <h4>Horaires d'ouverture</h4>
-                <div class="opening-hours">
-                    <p><strong>Lundi - Vendredi:</strong> 8h00 - 18h00</p>
-                    <p><strong>Samedi:</strong> 9h00 - 13h00</p>
-                    <p><strong>Dimanche:</strong> Fermé</p>
+    <!-- Footer -->
+    <footer>
+        <div id="conteneurPied">
+            <div class="footer-content">
+                <!-- Colonne 1 : Informations de contact -->
+                <div class="footer-column">
+                    <div class="footer-logo">
+                        <i class="fas fa-globe-americas"></i>
+                        <h3>RubMax Servicos</h3>
+                    </div>
+                    <div class="contact-info">
+                        <p><i class="fas fa-map-marker-alt"></i> Av. Bento Guelfi, 1260</p>
+                        <p>Jardim das Laranjeiras</p>
+                        <p>São Paulo - SP, CEP: 08381-001</p>
+                        <p><i class="fas fa-phone"></i> +55 (11) 99999-9999</p>
+                        <p><i class="fas fa-envelope"></i> contato@rubmax.com.br</p>
+                        <p><i class="fas fa-file-contract"></i> CNPJ: 40.082.272/0001-00</p>
+                    </div>
                 </div>
                 
-                <h4>Suivez-nous</h4>
-                <div class="social-links">
-                    <a href="https://wa.me/message/UXBHRZMMYYPID1" target="_blank" class="social-btn whatsapp">
-                        <i class="fab fa-whatsapp"></i>
-                        <span>WhatsApp</span>
-                    </a>
-                    <a href="https://www.facebook.com/RubMax01/" target="_blank" class="social-btn facebook">
-                        <i class="fab fa-facebook-f"></i>
-                        <span>Facebook</span>
-                    </a>
-                    <a href="https://www.youtube.com/channel/UCi1vi_4cwvw2TCa9LImryCQ" target="_blank" class="social-btn youtube">
-                        <i class="fab fa-youtube"></i>
-                        <span>YouTube</span>
-                    </a>
-                    <a href="mailto:contato@rubmax.com.br" class="social-btn email">
-                        <i class="fas fa-envelope"></i>
-                        <span>Email</span>
-                    </a>
+                <!-- Colonne 2 : Liens rapides -->
+                <div class="footer-column">
+                    <h4>Liens Rapides</h4>
+                    <ul class="footer-links">
+                        <li><a href="#utiles"><i class="fas fa-chevron-right"></i> Utilitaires</a></li>
+                        <li><a href="#federal"><i class="fas fa-chevron-right"></i> Services Fédéraux</a></li>
+                        <li><a href="#rne"><i class="fas fa-chevron-right"></i> RNE / Migrations</a></li>
+                        <li><a href="#boletos"><i class="fas fa-chevron-right"></i> Factures & Boletos</a></li>
+                        <li><a href="#hospital"><i class="fas fa-chevron-right"></i> Services de Santé</a></li>
+                        <li><a href="#pj"><i class="fas fa-chevron-right"></i> Services Entreprise</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Colonne 3 : Horaires & Réseaux sociaux -->
+                <div class="footer-column">
+                    <h4>Horaires d'ouverture</h4>
+                    <div class="opening-hours">
+                        <p><strong>Lundi - Vendredi:</strong> 8h00 - 18h00</p>
+                        <p><strong>Samedi:</strong> 9h00 - 13h00</p>
+                        <p><strong>Dimanche:</strong> Fermé</p>
+                    </div>
+                    
+                    <h4>Suivez-nous</h4>
+                    <div class="social-links">
+                        <a href="https://wa.me/message/UXBHRZMMYYPID1" target="_blank" class="social-btn whatsapp">
+                            <i class="fab fa-whatsapp"></i>
+                            <span>WhatsApp</span>
+                        </a>
+                        <a href="https://www.facebook.com/RubMax01/" target="_blank" class="social-btn facebook">
+                            <i class="fab fa-facebook-f"></i>
+                            <span>Facebook</span>
+                        </a>
+                        <a href="https://www.youtube.com/channel/UCi1vi_4cwvw2TCa9LImryCQ" target="_blank" class="social-btn youtube">
+                            <i class="fab fa-youtube"></i>
+                            <span>YouTube</span>
+                        </a>
+                        <a href="mailto:contato@rubmax.com.br" class="social-btn email">
+                            <i class="fas fa-envelope"></i>
+                            <span>Email</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Barre de copyright -->
+            <div class="footer-bottom">
+                <div class="copyright">
+                    <p>Copyright © 2022-2024 RubMax Servicos International. Tous droits réservés.</p>
+                    <p class="legal-links">
+                        <a href="#">Politique de confidentialité</a> | 
+                        <a href="#">Conditions d'utilisation</a> | 
+                        <a href="#">Mentions légales</a>
+                    </p>
                 </div>
             </div>
         </div>
-        
-        <!-- Barre de copyright -->
-        <div class="footer-bottom">
-            <div class="copyright">
-                <p>Copyright © 2022-2024 RubMax Servicos International. Tous droits réservés.</p>
-                <p class="legal-links">
-                    <a href="#">Politique de confidentialité</a> | 
-                    <a href="#">Conditions d'utilisation</a> | 
-                    <a href="#">Mentions légales</a>
-                </p>
-            </div>
-        </div>
-    </div>
-</footer>
-    </div>
+    </footer>
 
     <script>
         // Script pour la navigation par boutons - UNE SEULE SECTION VISIBLE À LA FOIS
@@ -1093,7 +1120,7 @@ footer {
             const navButtons = document.querySelectorAll('.nav-button');
             const contentSections = document.querySelectorAll('.content-section');
             
-            // Par défaut, la première section est visible
+            // Par défaut, la section Utilitaires est visible
             let currentActiveSection = document.querySelector('.content-section.active');
             
             // Ajouter un gestionnaire d'événements à chaque bouton
@@ -1114,23 +1141,19 @@ footer {
                     const newActiveSection = document.getElementById(targetId);
                     newActiveSection.classList.add('active');
                     currentActiveSection = newActiveSection;
+                    
+                    // Faire défiler vers le haut de la page
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
                 });
             });
             
             // Garantir qu'une section est toujours visible au chargement
             if (!document.querySelector('.content-section.active')) {
-                document.getElementById('federal').classList.add('active');
-                document.querySelector('.nav-button[data-target="federal"]').classList.add('active');
-                currentActiveSection = document.getElementById('federal');
+                document.getElementById('utiles').classList.add('active');
+                document.querySelector('.nav-button[data-target="utiles"]').classList.add('active');
+                currentActiveSection = document.getElementById('utiles');
             }
         });
     </script>
 </body>
 </html>
-
-
-
-
-
-
-
