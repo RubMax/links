@@ -130,19 +130,19 @@
             gap: 20px;
         }
         
-        /* Sections de contenu */
+        /* Sections de contenu - TOUJOURS UNE SEULE VISIBLE */
         .content-section {
             background-color: white;
             border-radius: 10px;
             padding: 0;
             box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
             overflow: hidden;
-            display: none;
+            display: none; /* Par défaut toutes cachées */
             animation: fadeIn 0.5s ease;
         }
         
         .content-section.active {
-            display: block;
+            display: block; /* Seule la section active est visible */
         }
         
         @keyframes fadeIn {
@@ -316,11 +316,6 @@
                 font-size: 1.8rem;
             }
         }
-        
-        /* Styles pour la section active par défaut */
-        #federal {
-            display: block;
-        }
     </style>
 </head>
 <body>
@@ -364,7 +359,7 @@
             </button>
         </div>
 
-        <!-- Contenu principal -->
+        <!-- Contenu principal - UNE SEULE SECTION VISIBLE À LA FOIS -->
         <div class="main-container">
             
             <!-- Section Services Fédéraux -->
@@ -375,7 +370,6 @@
                 </div>
                 <div class="section-content">
                     <div class="links-grid">
-                        <!-- Les liens de la section fédérale ici -->
                         <div class="link-card">
                             <a href="https://servicos.receita.fazenda.gov.br/Servicos/saga/agendamento/" target="_blank">
                                 <span>1ère voie CPF Agenda</span>
@@ -823,10 +817,13 @@
     </div>
 
     <script>
-        // Script pour la navigation par boutons
+        // Script pour la navigation par boutons - UNE SEULE SECTION VISIBLE À LA FOIS
         document.addEventListener('DOMContentLoaded', function() {
             const navButtons = document.querySelectorAll('.nav-button');
             const contentSections = document.querySelectorAll('.content-section');
+            
+            // Par défaut, la première section est visible
+            let currentActiveSection = document.querySelector('.content-section.active');
             
             // Ajouter un gestionnaire d'événements à chaque bouton
             navButtons.forEach(button => {
@@ -837,20 +834,23 @@
                     navButtons.forEach(btn => btn.classList.remove('active'));
                     this.classList.add('active');
                     
-                    // Afficher/masquer les sections
-                    contentSections.forEach(section => {
-                        section.classList.remove('active');
-                        if (section.id === targetId) {
-                            section.classList.add('active');
-                        }
-                    });
+                    // Cacher la section actuellement visible
+                    if (currentActiveSection) {
+                        currentActiveSection.classList.remove('active');
+                    }
+                    
+                    // Afficher la nouvelle section
+                    const newActiveSection = document.getElementById(targetId);
+                    newActiveSection.classList.add('active');
+                    currentActiveSection = newActiveSection;
                 });
             });
             
-            // Assurer qu'une section est toujours visible
+            // Garantir qu'une section est toujours visible au chargement
             if (!document.querySelector('.content-section.active')) {
-                document.querySelector('.content-section').classList.add('active');
-                document.querySelector('.nav-button').classList.add('active');
+                document.getElementById('federal').classList.add('active');
+                document.querySelector('.nav-button[data-target="federal"]').classList.add('active');
+                currentActiveSection = document.getElementById('federal');
             }
         });
     </script>
