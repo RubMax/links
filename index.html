@@ -1,1118 +1,485 @@
 <!DOCTYPE html>
-<html lang="fr">
-<head>
+<html lang="en">
+  <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>RubMax Servicos - Tableau de Bord</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        /* Variables de couleurs */
-        :root {
-            --primary-color: #2c3e50;
-            --secondary-color: #3498db;
-            --accent-color: #e74c3c;
-            --light-color: #ecf0f1;
-            --dark-color: #2c3e50;
-            --success-color: #27ae60;
-            --hover-color: #2980b9;
-            --border-color: #bdc3c7;
-        }
-        
-        /* Reset et styles de base */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        
-        body {
-            background-color: #f5f7fa;
-            color: #333;
-            line-height: 1.6;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-        
-        #setPage {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 20px;
-            width: 100%;
-            flex: 1;
-        }
-        
-        /* Header */
-        header {
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            color: white;
-            padding: 25px 0;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            text-align: center;
-        }
-        
-        #conteneurEntete {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-        
-        .logo-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .logo-container h1 {
-            font-size: 2.2rem;
-            font-weight: 700;
-            letter-spacing: 1px;
-            margin-bottom: 10px;
-        }
-        
-        .logo-container p {
-            font-size: 1.1rem;
-            opacity: 0.9;
-            max-width: 700px;
-            line-height: 1.5;
-        }
-        
-        /* Barre de navigation avec boutons */
-        .nav-container {
-            background-color: white;
-            border-radius: 10px;
-            padding: 15px;
-            margin-bottom: 20px;
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 10px;
-        }
-        
-        .nav-button {
-            background-color: var(--light-color);
-            border: none;
-            padding: 12px 20px;
-            border-radius: 50px;
-            font-weight: 600;
-            color: var(--dark-color);
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            flex: 1;
-            min-width: 180px;
-            justify-content: center;
-        }
-        
-        .nav-button:hover {
-            background-color: var(--secondary-color);
-            color: white;
-            transform: translateY(-2px);
-        }
-        
-        .nav-button.active {
-            background-color: var(--secondary-color);
-            color: white;
-            box-shadow: 0 4px 8px rgba(52, 152, 219, 0.3);
-        }
-        
-        .nav-button i {
-            font-size: 1rem;
-        }
-        
-        /* Conteneur principal */
-        .main-container {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            min-height: 400px;
-        }
-        
-        /* Sections de contenu - TOUJOURS UNE SEULE VISIBLE */
-        .content-section {
-            background-color: white;
-            border-radius: 10px;
-            padding: 0;
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
-            overflow: hidden;
-            display: none; /* Par défaut toutes cachées */
-            animation: fadeIn 0.5s ease;
-        }
-        
-        .content-section.active {
-            display: block; /* Seule la section active est visible */
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .section-header {
-            background: linear-gradient(to right, var(--primary-color), var(--dark-color));
-            color: white;
-            padding: 18px 25px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        
-        .section-header i {
-            font-size: 1.3rem;
-        }
-        
-        .section-header h2 {
-            font-size: 1.4rem;
-            font-weight: 600;
-        }
-        
-        .section-content {
-            padding: 25px;
-            min-height: 300px;
-        }
-        
-        /* Grille des liens */
-        .links-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 15px;
-        }
-        
-        .link-card {
-            background-color: var(--light-color);
-            border-radius: 8px;
-            padding: 18px;
-            transition: all 0.3s ease;
-            border-left: 4px solid var(--secondary-color);
-            position: relative;
-            height: 100%;
-        }
-        
-        .link-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-            border-left-color: var(--accent-color);
-        }
-        
-        .link-card a {
-            color: var(--dark-color);
-            text-decoration: none;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            width: 100%;
-            height: 100%;
-        }
-        
-        .link-card a:hover {
-            color: var(--secondary-color);
-        }
-        
-        .link-card i {
-            color: var(--secondary-color);
-            font-size: 0.9rem;
-            opacity: 0.7;
-        }
-        
-        .tooltip {
-            position: relative;
-            display: inline-block;
-        }
-        
-        .tooltip .tooltiptext {
-            visibility: hidden;
-            width: 200px;
-            background-color: var(--dark-color);
-            color: white;
-            text-align: center;
-            border-radius: 6px;
-            padding: 8px;
-            position: absolute;
-            z-index: 1;
-            bottom: 125%;
-            left: 50%;
-            transform: translateX(-50%);
-            opacity: 0;
-            transition: opacity 0.3s;
-            font-size: 0.85rem;
-            font-weight: normal;
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
-        }
-        
-        .tooltip .tooltiptext::after {
-            content: "";
-            position: absolute;
-            top: 100%;
-            left: 50%;
-            margin-left: -5px;
-            border-width: 5px;
-            border-style: solid;
-            border-color: var(--dark-color) transparent transparent transparent;
-        }
-        
-        .tooltip:hover .tooltiptext {
-            visibility: visible;
-            opacity: 1;
-        }
-        
-        /* Footer */
-        footer {
-            background: linear-gradient(135deg, #1a252f, #2c3e50);
-            color: #ecf0f1;
-            padding-top: 40px;
-            margin-top: 40px;
-            width: 100%;
-        }
+    <title>RubMax Servicos</title>
+    <link rel="stylesheet" href="style.css">
+  </head>
 
-        #conteneurPied {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
+<div id="setPage">
 
-        .footer-content {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 40px;
-            margin-bottom: 40px;
-        }
-
-        .footer-column {
-            padding: 0 15px;
-        }
-
-        .footer-logo {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 25px;
-        }
-
-        .footer-logo i {
-            font-size: 2.2rem;
-            color: #3498db;
-            background: rgba(52, 152, 219, 0.1);
-            padding: 15px;
-            border-radius: 10px;
-        }
-
-        .footer-logo h3 {
-            font-size: 1.6rem;
-            font-weight: 700;
-            color: #fff;
-        }
-
-        .contact-info p {
-            margin-bottom: 12px;
-            display: flex;
-            align-items: flex-start;
-            gap: 10px;
-            font-size: 0.95rem;
-            line-height: 1.5;
-        }
-
-        .contact-info i {
-            color: #3498db;
-            min-width: 20px;
-            margin-top: 3px;
-        }
-
-        .footer-column h4 {
-            color: #fff;
-            font-size: 1.2rem;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid rgba(52, 152, 219, 0.3);
-            position: relative;
-        }
-
-        .footer-column h4::after {
-            content: '';
-            position: absolute;
-            bottom: -2px;
-            left: 0;
-            width: 60px;
-            height: 2px;
-            background: #3498db;
-        }
-
-        .footer-links {
-            list-style: none;
-            padding: 0;
-        }
-
-        .footer-links li {
-            margin-bottom: 12px;
-        }
-
-        .footer-links a {
-            color: #bdc3c7;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: all 0.3s ease;
-            padding: 5px 0;
-        }
-
-        .footer-links a:hover {
-            color: #3498db;
-            transform: translateX(5px);
-        }
-
-        .footer-links i {
-            font-size: 0.8rem;
-            color: #3498db;
-        }
-
-        .opening-hours p {
-            margin-bottom: 10px;
-            padding: 8px 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .opening-hours strong {
-            color: #fff;
-            display: inline-block;
-            min-width: 120px;
-        }
-
-        .social-links {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-            margin-top: 20px;
-        }
-
-        .social-btn {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 12px 15px;
-            border-radius: 8px;
-            text-decoration: none;
-            color: white;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            border: none;
-        }
-
-        .social-btn i {
-            font-size: 1.2rem;
-        }
-
-        .social-btn.whatsapp {
-            background: linear-gradient(135deg, #25D366, #128C7E);
-        }
-
-        .social-btn.facebook {
-            background: linear-gradient(135deg, #1877F2, #0A5BC4);
-        }
-
-        .social-btn.youtube {
-            background: linear-gradient(135deg, #FF0000, #CC0000);
-        }
-
-        .social-btn.email {
-            background: linear-gradient(135deg, #EA4335, #D14836);
-        }
-
-        .social-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-            opacity: 0.9;
-        }
-
-        /* Footer bottom */
-        .footer-bottom {
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 25px 0;
-            text-align: center;
-            background: rgba(0, 0, 0, 0.2);
-        }
-
-        .copyright p {
-            color: #95a5a6;
-            font-size: 0.9rem;
-            margin-bottom: 10px;
-        }
-
-        .legal-links {
-            margin-top: 15px;
-        }
-
-        .legal-links a {
-            color: #bdc3c7;
-            text-decoration: none;
-            margin: 0 10px;
-            font-size: 0.85rem;
-            transition: color 0.3s ease;
-        }
-
-        .legal-links a:hover {
-            color: #3498db;
-        }
-
-        /* Responsive */
-        @media (max-width: 1200px) {
-            .nav-button {
-                min-width: 160px;
-            }
-        }
-        
-        @media (max-width: 992px) {
-            .nav-button {
-                min-width: 140px;
-            }
-            
-            .links-grid {
-                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            }
-        }
-        
-        @media (max-width: 768px) {
-            .nav-container {
-                flex-direction: column;
-            }
-            
-            .nav-button {
-                width: 100%;
-                min-width: unset;
-            }
-            
-            .links-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .logo-container h1 {
-                font-size: 1.8rem;
-            }
-            
-            .footer-content {
-                grid-template-columns: 1fr;
-                gap: 30px;
-            }
-            
-            .footer-column {
-                padding: 0;
-            }
-            
-            .social-links {
-                grid-template-columns: repeat(4, 1fr);
-            }
-            
-            .legal-links a {
-                display: block;
-                margin: 5px 0;
-            }
-        }
-
-        @media (max-width: 480px) {
-            #setPage {
-                padding: 10px;
-            }
-            
-            .logo-container h1 {
-                font-size: 1.6rem;
-            }
-            
-            .logo-container p {
-                font-size: 1rem;
-            }
-            
-            .section-content {
-                padding: 15px;
-            }
-            
-            .social-links {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            
-            .footer-logo {
-                flex-direction: column;
-                text-align: center;
-                gap: 10px;
-            }
-        }
-    </style>
-</head>
-<body>
-    <div id="setPage">
-        <!-- Header -->
+<!-- Entete de la page -->
+<header>
+    <div id="conteneurEntete">
        
-
-        <!-- Barre de navigation -->
-        <div class="nav-container">
-            <button class="nav-button active" data-target="utiles">
-                <i class="fas fa-tools"></i> Utilitaires
-            </button>
-            <button class="nav-button" data-target="federal">
-                <i class="fas fa-landmark"></i> Services Fédéraux
-            </button>
-            <button class="nav-button" data-target="rne">
-                <i class="fas fa-passport"></i> RNE / Migrations
-            </button>
-            <button class="nav-button" data-target="hospital">
-                <i class="fas fa-hospital"></i> Santé / Hôpital
-            </button>
-            <button class="nav-button" data-target="boletos">
-                <i class="fas fa-file-invoice-dollar"></i> Factures / Boletos
-            </button>
-            <button class="nav-button" data-target="transfert">
-                <i class="fas fa-exchange-alt"></i> Transferts
-            </button>
-            <button class="nav-button" data-target="pj">
-                <i class="fas fa-briefcase"></i> Entreprise (PJ)
-            </button>
-            <button class="nav-button" data-target="rubmax">
-                <i class="fas fa-user-tie"></i> RubMax
-            </button>
-            
+         <div>
+          
         </div>
-
-        <!-- Contenu principal - UNE SEULE SECTION VISIBLE À LA FOIS -->
-        <div class="main-container">
-            <!-- Section Utilitaires -->
-            <section id="utiles" class="content-section active">
-                <div class="section-header">
-                    <i class="fas fa-tools"></i>
-                    <h2>Utilitaires en Ligne</h2>
-                </div>
-                <div class="section-content">
-                    <div class="links-grid">
-                        <div class="link-card">
-                            <a href="https://web.whatsapp.com" target="_blank">
-                                <span>Whatsapp</span>
-                                <i class="fas fa-external-link-alt"></i>
-                            </a>
-                        </div>
-                        <div class="link-card">
-                            <a href="https://script.google.com/macros/s/AKfycbzDa0WONITev7GJhplsixNzIFfDBxsRwGWxO4d--9w94bxpNDgC0amGEHTuAOOnK92LUw/exec" target="_blank">
-                                <span>Gestion Colis</span>
-                                <i class="fas fa-external-link-alt"></i>
-                            </a>
-                        </div>
-                        <div class="link-card">
-                            <a href="https://www.dingconnect.com/fr-FR/Home" target="_blank">
-                                <span>Minit-Haiti</span>
-                                <i class="fas fa-external-link-alt"></i>
-                            </a>
-                        </div>
-                        <div class="link-card">
-                            <a href="https://mydhl.express.dhl/br/pt/home.html?cid=xbu_1.0_portal_login_exp#/getQuoteTab" target="_blank">
-                                <span>DHL</span>
-                                <i class="fas fa-external-link-alt"></i>
-                            </a>
-                        </div>
-                        <div class="link-card">
-                            <a href="https://www.ilovepdf.com/pt" target="_blank">
-                                <span>iLovePDF</span>
-                                <i class="fas fa-external-link-alt"></i>
-                            </a>
-                        </div>
-                        <div class="link-card">
-                            <a href="https://www.pdfescape.com/fr/" target="_blank">
-                                <span>PDF Scape</span>
-                                <i class="fas fa-external-link-alt"></i>
-                            </a>
-                        </div>
-                        <div class="link-card">
-                            <a href="https://bitly.com/" target="_blank">
-                                <span>BITLY (raccourcisseur d'URL)</span>
-                                <i class="fas fa-external-link-alt"></i>
-                            </a>
-                        </div>
-                        <div class="link-card">
-                            <a href="https://lightpdf.com/pdf-to-txt" target="_blank">
-                                <span>LightPDF (PDF vers texte)</span>
-                                <i class="fas fa-external-link-alt"></i>
-                            </a>
-                        </div>
-                        <div class="link-card">
-                            <a href="https://yt5s.com/en38/youtube-to-mp3" target="_blank">
-                                <span>YouTube vers MP3</span>
-                                <i class="fas fa-external-link-alt"></i>
-                            </a>
-                        </div>
-                        <div class="link-card">
-                            <a href="https://pt.idphoto4you.com/" target="_blank">
-                                <span>Photo 3x4</span>
-                                <i class="fas fa-external-link-alt"></i>
-                            </a>
-                        </div>
-                        <div class="link-card">
-                            <a href="https://www.gov.br/pt-br" target="_blank">
-                                <span>Gov.br (Portail gouvernemental)</span>
-                                <i class="fas fa-external-link-alt"></i>
-                            </a>
-                        </div>
-                        <div class="link-card">
-                            <a href="https://www.gerarpix.com.br/" target="_blank">
-                                <span>Créer QR CODE</span>
-                                <i class="fas fa-external-link-alt"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </section>
-            
-            <!-- Les autres sections restent inchangées -->
-            <!-- Section Services Fédéraux -->
-            <section id="federal" class="content-section">
-                <div class="section-header">
-                    <i class="fas fa-landmark"></i>
-                    <h2>Services Fédéraux</h2>
-                </div>
-                <div class="section-content">
-                    <div class="links-grid">
-                        <div class="link-card">
-                            <a href="https://servicos.receita.fazenda.gov.br/Servicos/saga/agendamento/" target="_blank">
-                                <span>1ère voie CPF Agenda</span>
-                                <i class="fas fa-external-link-alt"></i>
-                            </a>
-                        </div>
-                        <div class="link-card tooltip">
-                            <a href="https://servicos.receita.fazenda.gov.br/servicos/cpf/impressaocomprovante/consultaimpressao.asp" target="_blank">
-                                <span>2ème voie CPF</span>
-                                <i class="fas fa-external-link-alt"></i>
-                            </a>
-                            <span class="tooltiptext">Documents requis:<br>1- Brésilien CPF et Título de Eleitor<br>2- Étranger seulement CPF</span>
-                        </div>
-                        <div class="link-card">
-                            <a href="https://www.ipva.fazenda.sp.gov.br/ipvanet_consulta/consulta.aspx" target="_blank">
-                                <span>IPVA</span>
-                                <i class="fas fa-external-link-alt"></i>
-                            </a>
-                        </div>
-                        <div class="link-card">
-                            <a href="https://www.gov.br/receitafederal/pt-br/assuntos/meu-imposto-de-renda" target="_blank">
-                                <span>Imposto de Renda</span>
-                                <i class="fas fa-external-link-alt"></i>
-                            </a>
-                        </div>
-                        <div class="link-card">
-                            <a href="https://www.tse.jus.br/eleitor/autoatendimento-do-eleitor#/" target="_blank">
-                                <span>Titre Électeur Imprimer</span>
-                                <i class="fas fa-external-link-alt"></i>
-                            </a>
-                        </div>
-                        <div class="link-card">
-                            <a href="https://www.poupatempo.sp.gov.br/wps/portal/portalpoupatempo/servicos-online/" target="_blank">
-                                <span>Poupatempo Services</span>
-                                <i class="fas fa-external-link-alt"></i>
-                            </a>
-                        </div>
-                        <div class="link-card">
-                            <a href="https://servicos.mte.gov.br/#/trabalhador" target="_blank">
-                                <span>Carte de travail Digital</span>
-                                <i class="fas fa-external-link-alt"></i>
-                            </a>
-                        </div>
-                        <div class="link-card">
-                            <a href="https://www10.fazenda.sp.gov.br/CertidaoNegativaDeb/Pages/ImpressaoCertidaoNegativa.aspx" target="_blank">
-                                <span>Certidão Negativa Personne Physique</span>
-                                <i class="fas fa-external-link-alt"></i>
-                            </a>
-                        </div>
-                        <div class="link-card">
-                            <a href="https://servicos.dpf.gov.br/sinpa/inicializacaoSolicitacao.do?dispatch=inicializarSolicitacaoPassaporte" target="_blank">
-                                <span>Demande Passeport Brésilien</span>
-                                <i class="fas fa-external-link-alt"></i>
-                            </a>
-                        </div>
-                        <div class="link-card">
-                            <a href="https://www.delegaciaeletronica.policiacivil.sp.gov.br/ssp-de-cidadao/home" target="_blank">
-                                <span>Comunicar Ocorrência</span>
-                                <i class="fas fa-external-link-alt"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </section>
-            
-            <!-- Section RNE / Migrations -->
-            <section id="rne" class="content-section">
-                <div class="section-header">
-                    <i class="fas fa-passport"></i>
-                    <h2>RNE / Services Migratoires</h2>
-                </div>
-                <div class="section-content">
-                    <div class="links-grid">
-                        
-                        <div class="link-card">
-                            <a href="https://servicos.dpf.gov.br/sismigra-internet/home.seam?cid=6365" target="_blank">
-                                <span>RNM index</span>
-                                <i class="fas fa-external-link-alt"></i>
-                            </a>
-                        </div>
-                        <div class="link-card">
-                            <a href="https://servicos.dpf.gov.br/sismigra-internet/faces/publico/tipoSolicitacao/permanenciaRegistroEmissaoCie.seam" target="_blank">
-                                <span>RNM 1ère voie formulaire</span>
-                                <i class="fas fa-external-link-alt"></i>
-                            </a>
-                        </div>
-                        <div class="link-card">
-                            <a href="https://servicos.pf.gov.br/agenda-web/acessar" target="_blank">
-                                <span>Agenda/Re-agenda/Annuler</span>
-                                <i class="fas fa-external-link-alt"></i>
-                            </a>
-                        </div>
-                        <div class="link-card">
-                            <a href="https://antecedentes.dpf.gov.br/antecedentes-criminais/certidao" target="_blank">
-                                <span>Antécédents Criminels</span>
-                                <i class="fas fa-external-link-alt"></i>
-                            </a>
-                        </div>
-                        <div class="link-card">
-                            <a href="https://portaldeimigracao.mj.gov.br/pt/?option=com_content&view=article&layout=edit&id=401725" target="_blank">
-                                <span>MigranteWeb 2.0</span>
-                                <i class="fas fa-external-link-alt"></i>
-                            </a>
-                        </div>
-                        <div class="link-card">
-                            <a href="https://www.in.gov.br/consulta" target="_blank">
-                                <span>Diário Oficial da União</span>
-                                <i class="fas fa-external-link-alt"></i>
-                            </a>
-                        </div>
-                        <div class="link-card">
-                            <a href="https://formulario-mre.serpro.gov.br/sci/pages/web/ui/#/cidadao-nacionalidade" target="_blank">
-                                <span>Visto-Services Consulaires</span>
-                                <i class="fas fa-external-link-alt"></i>
-                            </a>
-                        </div>
-                        <div class="link-card">
-                            <a href="https://ec-portoprincipe.itamaraty.gov.br/" target="_blank">
-                                <span>Sistema e-consular</span>
-                                <i class="fas fa-external-link-alt"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </section>
-            
-            <!-- Section Santé / Hôpital -->
-            <section id="hospital" class="content-section">
-                <div class="section-header">
-                    <i class="fas fa-hospital"></i>
-                    <h2>Santé et Services Hospitaliers</h2>
-                </div>
-                <div class="section-content">
-                    <div class="links-grid">
-                        <div class="link-card">
-                            <a href="https://www.retireseuexame.com.br/retireseuexame/" target="_blank">
-                                <span>Retirer Examen</span>
-                                <i class="fas fa-external-link-alt"></i>
-                            </a>
-                        </div>
-                        <div class="link-card">
-                            <a href="https://conectesus-paciente.saude.gov.br/menu/home-default" target="_blank">
-                                <span>Certificat COVID-19</span>
-                                <i class="fas fa-external-link-alt"></i>
-                            </a>
-                        </div>
-                        <div class="link-card">
-                            <a href="https://conectesus-paciente.saude.gov.br/menu/home-default" target="_blank">
-                                <span>Carte Nationale de Vaccination</span>
-                                <i class="fas fa-external-link-alt"></i>
-                            </a>
-                        </div>
-                        <div class="link-card">
-                            <a href="https://conectesus-paciente.saude.gov.br/menu/home-default" target="_blank">
-                                <span>Carte du SUS</span>
-                                <i class="fas fa-external-link-alt"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </section>
-            
-            <!-- Section Factures / Boletos -->
-            <section id="boletos" class="content-section">
-                <div class="section-header">
-                    <i class="fas fa-file-invoice-dollar"></i>
-                    <h2>Factures et Services de Paiement</h2>
-                </div>
-                <div class="section-content">
-                    <div class="links-grid">
-                        <div class="link-card">
-                            <a href="https://meutim.tim.com.br/novo/login" target="_blank">
-                                <span>TIM - 2ème voie</span>
-                                <i class="fas fa-external-link-alt"></i>
-                            </a>
-                        </div>
-                        <div class="link-card">
-                            <a href="https://auth.netcombo.com.br/web/login.html" target="_blank">
-                                <span>CLARO - 2ème voie</span>
-                                <i class="fas fa-external-link-alt"></i>
-                            </a>
-                        </div>
-                        <div class="link-card">
-                            <a href="https://login.vivo.com.br/loginmarca/appmanager/marca/publico" target="_blank">
-                                <span>VIVO - 2ème voie</span>
-                                <i class="fas fa-external-link-alt"></i>
-                            </a>
-                        </div>
-                        <div class="link-card">
-                            <a href="https://agenciavirtual.sabesp.com.br/minhas-faturas" target="_blank">
-                                <span>SABESP 2ème voie</span>
-                                <i class="fas fa-external-link-alt"></i>
-                            </a>
-                        </div>
-                        <div class="link-card">
-                            <a href="https://www.eneldistribuicao.com.br/ce/AcessoRapidoSegundaVia.aspx" target="_blank">
-                                <span>ENEL 2ème voie</span>
-                                <i class="fas fa-external-link-alt"></i>
-                            </a>
-                        </div>
-                        <div class="link-card">
-                            <a href="https://www63.bb.com.br/portalbb/boleto/boletos/hc21e,802,3322,10343.bbx" target="_blank">
-                                <span>BANCO DO BRASIL</span>
-                                <i class="fas fa-external-link-alt"></i>
-                            </a>
-                        </div>
-                        <div class="link-card">
-                            <a href="https://www.itau.com.br/servicos/boletos/atualizar/" target="_blank">
-                                <span>ITAU/UNIBANCO</span>
-                                <i class="fas fa-external-link-alt"></i>
-                            </a>
-                        </div>
-                        <div class="link-card">
-                            <a href="https://www.santander.com.br/2-via-boleto" target="_blank">
-                                <span>SANTANDER</span>
-                                <i class="fas fa-external-link-alt"></i>
-                            </a>
-                        </div>
-                        <div class="link-card">
-                            <a href="https://www8.receita.fazenda.gov.br/SimplesNacional/Aplicacoes/ATSPO/pgmei.app/Identificacao" target="_blank">
-                                <span>Payer MEI/DAS</span>
-                                <i class="fas fa-external-link-alt"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </section>
-            
-            <!-- Section Transferts -->
-            <section id="transfert" class="content-section">
-                <div class="section-header">
-                    <i class="fas fa-exchange-alt"></i>
-                    <h2>Transferts d'Argent</h2>
-                </div>
-                <div class="section-content">
-                    <div class="links-grid">
-                        <div class="link-card">
-                            <a href="https://remessaexpressa.cotacao.com.br/" target="_blank">
-                                <span>Remessa Expressa</span>
-                                <i class="fas fa-external-link-alt"></i>
-                            </a>
-                        </div>
-                        <div class="link-card">
-                            <a href="https://www.moresistemas.com:5701/hmaster.aspx" target="_blank">
-                                <span>More</span>
-                                <i class="fas fa-external-link-alt"></i>
-                            </a>
-                        </div>
-                        <div class="link-card">
-                            <a href="https://wupos2lb.westernunion.com/web-ui/login" target="_blank">
-                                <span>WU</span>
-                                <i class="fas fa-external-link-alt"></i>
-                            </a>
-                        </div>
-                         <div class="link-card">
-                            <a href="https://portal-wu.inpaas.com/api/ckb-portal-online/western-union/pt/artigos/detalhe-do-ticket.html?id_ticket=669463" target="_blank">
-                                <span>WU-CHAMADA</span>
-                                <i class="fas fa-external-link-alt"></i>
-                            </a>
-                        </div>
-                        <div class="link-card">
-                            <a href="https://western-union.plusoftomni.com.br/api/chatsite/site/-i0qS7clwFnwrEY-g3E1i8J4dvFC-mLyeErv6VJW6ppt4Pm7J4bHVQ==/client" target="_blank">
-                                <span>WU-CHAT</span>
-                                <i class="fas fa-external-link-alt"></i>
-                            </a>
-                        </div>
-                        <div class="link-card">
-                            <a href="https://ib.rendimento.com.br/Acesso?i=240235028" target="_blank">
-                                <span>Rendimento OnLine</span>
-                                <i class="fas fa-external-link-alt"></i>
-                            </a>
-                        </div>
-                        <div class="link-card">
-                            <a href="https://www.cambiorendimento.com.br/?i=24023502880" target="_blank">
-                                <span>Rendimento Cambio</span>
-                                <i class="fas fa-external-link-alt"></i>
-                            </a>
-                        </div>
-                        <div class="link-card">
-                            <a href="https://www.xoom.com/haiti/send-money" target="_blank">
-                                <span>ZOOM</span>
-                                <i class="fas fa-external-link-alt"></i>
-                            </a>
-                        </div>
-                        <div class="link-card">
-                            <a href="https://www.paypal.com/myaccount/summary" target="_blank">
-                                <span>PAYPAL</span>
-                                <i class="fas fa-external-link-alt"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </section>
-            
-            <!-- Section Entreprise (PJ) -->
-            <section id="pj" class="content-section">
-                <div class="section-header">
-                    <i class="fas fa-briefcase"></i>
-                    <h2>Entreprise (Pessoa Jurídica)</h2>
-                </div>
-                <div class="section-content">
-                    <div class="links-grid">
-                        <div class="link-card">
-                            <a href="http://www8.receita.fazenda.gov.br/SimplesNacional/Aplicacoes/ATSPO/pgmei.app/Identificacao" target="_blank">
-                                <span>DAS (Documento de Arrecadação)</span>
-                                <i class="fas fa-external-link-alt"></i>
-                            </a>
-                        </div>
-                        <div class="link-card">
-                            <a href="http://notadomilhao.prefeitura.sp.gov.br/empresas" target="_blank">
-                                <span>NFS-e (Nota Fiscal de Serviços)</span>
-                                <i class="fas fa-external-link-alt"></i>
-                            </a>
-                        </div>
-                        <div class="link-card">
-                            <a href="http://www.sintegra.gov.br" target="_blank">
-                                <span>Inscrição Estadual (I.E.)</span>
-                                <i class="fas fa-external-link-alt"></i>
-                            </a>
-                        </div>
-                        <div class="link-card">
-                            <a href="https://www.gov.br/empresas-e-negocios/pt-br" target="_blank">
-                                <span>CNPJ</span>
-                                <i class="fas fa-external-link-alt"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </section>
-            
-            <!-- Section RubMax -->
-            <section id="rubmax" class="content-section">
-                <div class="section-header">
-                    <i class="fas fa-user-tie"></i>
-                    <h2>RubMax Services</h2>
-                </div>
-                <div class="section-content">
-                    <div class="links-grid">
-                        <div class="link-card">
-                            <a href="https://wa.me/message/UXBHRZMMYYPID1" target="_blank">
-                                <span>WhatsApp RubMax</span>
-                                <i class="fas fa-external-link-alt"></i>
-                            </a>
-                        </div>
-                        <div class="link-card">
-                            <a href="https://www.youtube.com/channel/UCi1vi_4cwvw2TCa9LImryCQ" target="_blank">
-                                <span>YouTube RubMax</span>
-                                <i class="fas fa-external-link-alt"></i>
-                            </a>
-                        </div>
-                        <div class="link-card">
-                            <a href="https://www.facebook.com/RubMax01/" target="_blank">
-                                <span>Page Facebook RubMax</span>
-                                <i class="fas fa-external-link-alt"></i>
-                            </a>
-                        </div>
-                        <div class="link-card tooltip">
-                            <a href="https://docs.google.com/spreadsheets/d/1mi_VmHvk2ss17X2y_ko8PvpwuvPhoorOWremLJpmTCc/edit?usp=sharing" target="_blank">
-                                <span>Comptes Clients</span>
-                                <i class="fas fa-external-link-alt"></i>
-                            </a>
-                            <span class="tooltiptext">Fichier Excel avec les comptes Gmail créés pour les clients</span>
-                        </div>
-                        <div class="link-card">
-                            <a href="https://drive.google.com/drive/u/0/folders/1RVl80QrIofMShqcNzKbDDS5TOl3d8X_P" target="_blank">
-                                <span>Modèles CV</span>
-                                <i class="fas fa-external-link-alt"></i>
-                            </a>
-                        </div>
-                        <div class="link-card">
-                            <a href="https://docs.google.com/document/d/1ZtiHRrCrcBlcRtUxZFXSJzZMYAkOWADwi1XiTUpxH5s/edit" target="_blank">
-                                <span>Dettes Clients</span>
-                                <i class="fas fa-external-link-alt"></i>
-                            </a>
-                        </div>
-                        <div class="link-card">
-                            <a href="https://www.remessaonline.com.br/entrar/pessoa-juridica" target="_blank">
-                                <span>RemesaOnline</span>
-                                <i class="fas fa-external-link-alt"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </section>
+        <div>
+         
         </div>
     </div>
+</header>
+<body>
+      <!-- Fin Entete / Corps de la page --> 
+     <div id="flex-container">
+     <div class="OnlineService">
+<h5>FEDERAL SERVICOS</h5>
 
-    <!-- Footer -->
-    
-    <script>
-        // Script pour la navigation par boutons - UNE SEULE SECTION VISIBLE À LA FOIS
-        document.addEventListener('DOMContentLoaded', function() {
-            const navButtons = document.querySelectorAll('.nav-button');
-            const contentSections = document.querySelectorAll('.content-section');
+         <!-- BRASIL SERVICES --> 
+          <ul style="list-style-type:;">
             
-            // Par défaut, la section Utilitaires est visible
-            let currentActiveSection = document.querySelector('.content-section.active');
+            <li>
+               <a href="https://servicos.receita.fazenda.gov.br/Servicos/saga/agendamento/", target="_blank">1a via CPF Agenda</a>
+             </li>
+             
+            <li>
+               <a href="https://mail.google.com/mail/u/0/?tab=rm#inbox/KtbxLvhRWJZQfmtCPxksnpFPWNLTwkvmwL", target="_blank">DOC/CPF estrangeiro</a>
+             </li>
+
+             <li class="tooltip">
+              <span class="tooltiptext">Documentos:<br>1- Brasileiro CPF et Título de Eleitor
+                                        <br>2- Estrangeiro so CPF</span>
+              <a href="https://servicos.receita.fazenda.gov.br/servicos/cpf/impressaocomprovante/consultaimpressao.asp", target="_blank">2a via CPF</a>
+             </li>
+               <li><a href="https://servicos.receita.fazenda.gov.br/servicos/cpf/consultasituacao/consultapublica.asp" , target="_blank">Comprovante CPF</a>
+               </li>
+             </li>
+             
+             <li>
+               <a href="https://accounts.google.com/signup/v2/webcreateaccount?flowName=GlifWebSignIn&flowEntry=SignUp", target="_blank">Criação E-mail</a>
+             </li>
+             <li>
+               <a href="https://www.ipva.fazenda.sp.gov.br/ipvanet_consulta/consulta.aspx", target="_blank">IPVA</a>
+             </li>
+             
             
-            // Ajouter un gestionnaire d'événements à chaque bouton
-            navButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    const targetId = this.getAttribute('data-target');
-                    
-                    // Mettre à jour les boutons actifs
-                    navButtons.forEach(btn => btn.classList.remove('active'));
-                    this.classList.add('active');
-                    
-                    // Cacher la section actuellement visible
-                    if (currentActiveSection) {
-                        currentActiveSection.classList.remove('active');
-                    }
-                    
-                    // Afficher la nouvelle section
-                    const newActiveSection = document.getElementById(targetId);
-                    newActiveSection.classList.add('active');
-                    currentActiveSection = newActiveSection;
-                    
-                    // Faire défiler vers le haut de la page
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                });
-            });
+             <li>
+               <a href="https://www.gov.br/receitafederal/pt-br/assuntos/meu-imposto-de-renda", target="_blank">Imposto de Renda</a>
+             </li>
+             <li>
+                  <a href="https://consultaauxilio.cidadania.gov.br/consulta/#/", target="_blank">Auxílio Emergencial</a>
+              </li>
+              
+              <li>
+                  <a href="https://meucadunico.cidadania.gov.br/meu_cadunico/index.php", target="_blank">Consulte o CadÚnico</a>
+              </li>
+              <li class="bloquesMilieu">
+              <a href="https://app.celcoin.com.br/", target="_blank">Rede Celcoin</a>
+            </li>
+             <li>
+               <a href="https://www.westernunion.com/br/pt/fraud-awareness.html", target="_blank">Western Union</a>
+             </li>
+             <li>
+               <a href="https://www.tse.jus.br/eleitor/autoatendimento-do-eleitor#/", target="_blank">Titura Eleitor Imprimir</a>
+             </li>
+  <h5>RNE</h5>
+            <li>
+                  <a href="https://forms.gle/cREr45Hc9a83pYZB9", target="_blank">SAVE PEDIDOS</a>
+              </li>
+            <li>
+                  <a href="https://docs.google.com/spreadsheets/d/1KNtrSadlt4it21bff5StIxufw6nP_AjLeMOISUuTXB4/edit?usp=sharing", target="_blank">LISTA PEDIDOS</a>
+              </li>
+              <li>
+                  <a href="https://servicos.dpf.gov.br/sismigra-internet/home.seam?cid=6365", target="_blank">RNM index</a>
+              </li>
+              <li>
+               <a href="https://www.gov.br/pf/pt-br/assuntos/imigracao/autorizacao-residencia/autorizacao-de-residencia-para-fins-de-acolhida-humanitaria-para-cidadaos-haitianos-e-apatridas-residentes-na-republica-do-haiti", target="_blank">dOCS</a>
+             </li>
+             <li>
+                  <a href="https://servicos.dpf.gov.br/sismigra-internet/faces/publico/tipoSolicitacao/permanenciaRegistroEmissaoCie.seam", target="_blank">RNM 1a via form</a>
+              </li>
+             <li>
+               <a href="https://www.gov.br/pf/pt-br/assuntos/imigracao/substituir-carteira-de-registro-nacional-migratorio/substituir-carteira-de-registro-nacional-migratorio-de-residente-por-prazo-indeterminado-em-razao-de-decurso-do-prazo-de-validade-do-documento-renovacao-de-prazo", target="_blank">Substituir   RNM indeterminado 2a</a>
+             </li>
+             <li>
+               <a href="https://servicos.dpf.gov.br/sismigra-internet/faces/publico/tipoSolicitacao/permanenciaRegistroEmissaoCie.seam", target="_blank">AUTORIZAÇÃO DE RESIDÊNCIA COM BASE EM REUNIÃO FAMILIAR</a>
+             </li>
+             
+             <li>
+               <a href="https://servicos.pf.gov.br/agenda-web/acessar", target="_blank">Ag/Re-ag/Cancelar</a>
+             </li>
+              <li>
+               <a href="https://antecedentes.dpf.gov.br/antecedentes-criminais/certidao", target="_blank">Antecedente Criminais</a>
+             </li>
+             <li>
+               <a href="https://antecedentes.dpf.gov.br/antecedentes-criminais/validacao", target="_blank">Validar Antecedente Cnais</a>
+             </li>
+             <li>
+              <a href="https://www.tjsp.jus.br/Certidoes/Certidoes/CertidoesPrimeiraInstancia", target="_blank">Certidao E. Criminal SAJ</a>
+          </li>
+          <li>
+                  <a href="https://servicos.mte.gov.br/#/trabalhador", target="_blank">Cart. de trabalho Digital</a>
+              </li>
+          <li>
+              <a href="https://www.pdfescape.com/open/?7C470D9ECD360C0A49995BF506304E5BA99762BA72BB4BEB", target="_blank">Declaracao eletronica</a>
+          </li>
+           <li>
+              <a href="https://web.trf3.jus.br/certidao/Certidao", target="_blank">Certidao de distribuicao</a>
+          </li>
+          <li>
+              <a href="https://docs.google.com/document/d/1v4ZYOumuMIkvArT4jT0Ae7xzRlXTMmuUYkdKdMqRxjg/edit", target="_blank">Declaracao de endereco</a>
+          </li>
+          <li>
+              <a href="https://docs.google.com/document/d/1nFox6hzOJujbX5rgE1D2mZc7Rnk-lSB6_Oav7BwDDuk/edit", target="_blank">Trabalho Informal</a>
+          </li>
+           
+             
+              <li>
+                  <a href="https://servicos.dpf.gov.br/sismigra-internet/home.seam?cid=32559", target="_blank">TROCA ENDERECO</a>
+              </li>
+              <li>
+                  <a href="https://www.gov.br/pf/pt-br/assuntos/imigracao/autorizacao-residencia/autorizacao-de-residencia-por-reuniao-familiar", target="_blank">All docs</a>
+              </li>
+              
+<h5>FEDERAL S.</h5>
+              
+             <li>
+               <a href="https://servicos.dpf.gov.br/sinpa/inicializacaoSolicitacao.do?dispatch=inicializarSolicitacaoPassaporte", target="_blank">Solicitação de passaporte Brasileiro FORM</a>
+             </li>
+              <li>
+            <a href="https://www.poupatempo.sp.gov.br/wps/portal/portalpoupatempo/servicos-online/!ut/p/z1/nVXdeqIwFHwaL9MckhDI3lm1IhZdarWVm34BQdlVQhHrdp9-4_51FQtuuQGSGc5kvjkHHOBHHGTyJV3KMlWZXOv3ecCfRk6XOKwPY7t30wV_4A67o55BgBj44ScA3rnagINL-H8B_RujrQH3hE68z3R8y_-TXwUE9fJmOMBBlJV5ucLzXO1yWcabXD1FKivj3UK1IFdFKdct2EqUyyKK00Jt9eqfxwM_j9IFnktLgi0IQwCCImbaCyQgsdDC5BQikwjgtEHvrNavfsdq4A_NWr_shvqHAsf8LrsB378z-r7PAXjV7wogqJdXr18LrOM7TXzn5PzjoaBanmd4lFkEPDjlVwHH_K5LwOeOL6bjAYUeqfArgCM-uGMBvmMOXLgWAHcV_6qAxrwHx5AzHdOU-bnWYP2jYWZ1tAcdzsXnIYWhNukljfd4mqlio2fA5C3iOs4chGGgUCYhYjxhKGQRIMFEIk2tMDQt7AB2a4-hU67nSvrl-Tlo6-Y7dNq3Ej82dV8Rb3frUi4O7XeREF2EFF7HW2r5slyhNEsUfryIemKRPfV1zAczt3c_6QEY5H2LJI8MYjKGTEEsxEIZIilIgmxh8YXBI9uK7AZ_dJucl37Rtz9ibVnIUK5XMdK7ahvpzYtKnQZp1Ob6GCN7QowOwITXuHTJrHSbhtl5l95G80esODvjtZLlWoW_fojtLKS2LlnESVzExdWu0Murssy3n1rQgv1-f7VUarmOryK1acE5ykpttZRjJM430-l0Y9PX9PeFviZej7IgfKXfr0fo6H4bP_wAkNYFtA!!/dz/d5/L2dJQSEvUUt3QS80TmxFL1o2X05IRDJINEcwTzBKTzkwUUg1SUowQjkwMFIx/#", target="_blank">Poupatempo Servicos</a>
+          </li>
+          
+          
+          <li>
+            <a href="http://saaweb.mte.gov.br/inter/saa/pages/agendamento/identificacaoUsuario.seam", target="_blank">Ag. Seguro Desemprego</a>
+          </li>
+          <li>
+            <a href="https://servicos.mte.gov.br/#/loginfailed/redirect=trabalhador.carteira", target="_blank">Carteira de Trabalho Digital</a>
+          </li>
+          <li>
+            <a href="https://www10.fazenda.sp.gov.br/CertidaoNegativaDeb/Pages/ImpressaoCertidaoNegativa.aspx", target="_blank">Certidão Negativa pESOA FISICA</a>
+          </li>
+          <li>
+          <a href="https://servicos.cohab.sp.gov.br/demanda/Default.aspx", target="_blank">COHAB,DEMANDA HADITATIONAL</a>
+          </li>
+          <li>
+              <a href="https://formulario-mre.serpro.gov.br/sci/pages/web/ui/#/requerimento", target="_blank">Randez-vous visa Haiti -Brasil</a>
+          </li>
+          
+          <h5>Visa Form.</h5>
+          <li>
+              <a href="https://www.gov.br/mj/pt-br/assuntos/seus-direitos/migracoes/autorizacao-de-residencia-haitianos-e-apatridas", target="_blank">DOCs Visa</a>
+          </li>
+          </ul>
+
+       </div>
+
+         <!-- MILIEU SERVICES --> 
+        <div class="milieuServices">
+<h5><a href="https://script.google.com/macros/s/AKfycbyfEwMJewSgFOlEg8GGr1vS5jGKxwRuOLLoZzqrz0dZpychtBNqSfyRm-p0r-U0Ery4fw/exec", target="_blank">TACHES</a></h5>
+<h5>HOSPITAL</h5>
+          <ul>
+           <li class="">
+                <a href="https://www.retireseuexame.com.br/retireseuexame/", target="_blank">Retire Examen</a>
+            </li>
+            <li>
+            <a href="https://conectesus-paciente.saude.gov.br/menu/home-default", target="_blank">Certificado Covide-19</a>
+          </li>
+          <li>
+            <a href="https://conectesus-paciente.saude.gov.br/menu/home-default", target="_blank">Carteira N. de Vacinação</a>
+          </li>
+          <li>
+            <a href="https://conectesus-paciente.saude.gov.br/menu/home-default", target="_blank">Cartao do SUS</a>
+          </li>
+          </ul>
+<h5>BOLETOS</h5>
+          <ul style="list-style-type:;">
+               <li>
+                   <a href="http://consultaoperadora.com.br/site2015/resposta.php", target="_blank">Operadora?</a>
+                </li>
+
+               <li>
+                <a href="https://meutim.tim.com.br/novo/login?bmctx=8B94D49C137CCFE1FA9512A461AC79DB4FBA69EFB5FA39109654FE9A6E39100A&contextType=external&username=string&enablePersistentLogin=true&contextValue=%2Foam&password=secure_string&challenge_url=https%3A%2F%2Fmeutim.tim.com.br%2Fnovo%2Flogin&request_id=7325891975576804326&authn_try_count=0&locale=fr_FR&resource_url=https%253A%252F%252Fmeutim.tim.com.br%252F%253Futm_campaign%253Dsitedl-estimulo-app-home-acessar-meu-tim-site-tim%2526utm_medium%253Dsitedl%2526utm_source%253Dbtl", target="_blank">TIM</a>
+             </li>
+             <li><a href="https://auth.netcombo.com.br/web/login.html?client_id=MinhaClaroDIG&response_type=code&scope=minha_claro_dig+openid&redirect_uri=https%253A%252F%252Fminhaclaro.claro.com.br&authMs=UP,EP,DOCP,OTP", target="_blank">CLARO</a>
+             </li>
+             <li>
+               <a href="https://login.vivo.com.br/loginmarca/appmanager/marca/publico?origem=https://login.vivo.com.br/saml2/idp/sso/login-return&_ga=2.112923588.1177941660.1646744470-926023343.1646500241&_gac=1.251171316.1646744488.Cj0KCQiAmpyRBhC-ARIsABs2EAosAY92iDGs60tMfhgNPFV7T77Nsu23ehriJ-ar26BYDoRcHwTPB6QaAilPEALw_wcB#" target="_blank">VIVO</a>
+             </li>
+             <li>
+               <a href="https://www.oi.com.br/minha-oi/segunda-via/" target="_blank">Oi</a>
+             </li>
+             <li>
+                   <a href="https://www.casasbahia.com.br/2-via-da-fatura-cartao-casasbahia/b", target="_blank">CasasBahia</a>
+                </li>
+             <li>
+                 <a href="https://agenciavirtual.sabesp.com.br/minhas-faturas", target="_blank">SABESP 2ª via de conta</a>
+               </li>
+               <li>
+                 <a href="https://www.eneldistribuicao.com.br/ce/AcessoRapidoSegundaVia.aspx", target="_blank">ENEL 2ª via de conta</a>
+               </li>
+              <li>
+                  <a href="https://simic.caixa.gov.br/MoveisCard/index.html#", target="_blank">CAIXA minha Casa Melhor(SIMIC)</a>
+              </li>
+              <li>
+                  <a href="https://www.caixa.gov.br/atendimento/2-via-boleto/Paginas/default.aspx", target="_blank">CAIXA</a>
+              </li>
+              <li>
+                  <a href="https://www.avoncomigo.avon.com.br/widget/avonwg2/#/login", target="_blank">AVON</a>
+              </li>
+              <li>
+                  <a href="https://aluno.uninove.br/index.php", target="_blank">UniNove</a>
+              </li>
+              <li>
+                  <a href="https://www63.bb.com.br/portalbb/boleto/boletos/hc21e,802,3322,10343.bbx", target="_blank">BANCO DO BRASIL</a>
+              </li>
+              <li>
+                  <a href="https://banco.bradesco/html/pessoajuridica/solucoes-integradas/outros/2-via-de-boleto.shtm", target="_blank">BRADESCO</a>
+              </li>
+              
+              <li>
+                  <a href="https://clientes.bancohonda.com.br/Seguranca/Login/?ReturnUrl=%2fServicosOnline%2fBoletoEletronico%2fSegundaViaBoleto", target="_blank">HONDA MOTOCA</a>
+              </li>
+              <li>
+                  <a href="https://www.itau.com.br/servicos/boletos/atualizar/", target="_blank">Itau/Unibanco</a>
+              </li>
+              <li>
+                  <a href="https://www.santander.com.br/2-via-boleto", target="_blank">SANTANDER</a>
+              </li>
+              <li>
+                  <a href="https://www.sicoob.com.br/web/sicoob/segunda-via-de-boleto", target="_blank">SICOOB</a>
+              </li>
+              <li>
+                  <a href="https://www.msn.com/pt-br/?ocid=mailsignout&pc=U591", target="_blank">Outlook/Hotmail</a>
+              </li>
+              <li>
+                  <a href="https://pt.idphoto4you.com/", target="_blank">FOTO 3X4</a>
+              </li>
+              
+              <li>
+                  <a href="https://sptrans.documentodoestudante.com.br/elegibilidade", target="_blank"> Bilhete Único de Estudante</a>
+              </li>
+              <li>
+                  <a href="https://www.vipbrtelecom.com.br/", target="_blank"> VIP 2a Via</a>
+              </li>
+              <li>
+                  <a href="https://www8.receita.fazenda.gov.br/SimplesNacional/Aplicacoes/ATSPO/pgmei.app/Identificacao", target="_blank">Pagar MEI/DAS</a>
+              </li>
+              <li>
+               <a href="https://ppi.prefeitura.sp.gov.br/OpenForms/frmSegundaViaDAMSP.aspx" target="_blank">PROGRAMA PARCELAMENTO INCENTIVADO</a>
+             </li>
+             </ul>
+<h5>CARTAS</h5>
+         <ul>
+           <li>
+             <a href="https://docs.google.com/document/d/1lJJt26PqNTT5Qbb_EVPWUbXLxgUK8Ii68SyPZe7ZGoE/edit", target="_blank"> Permissão/apresentar e assina</a>
+           </li>
+           <li>
+             <a href="https://docs.google.com/document/d/1lJJt26PqNTT5Qbb_EVPWUbXLxgUK8Ii68SyPZe7ZGoE/edit", target="_blank">Convite criancas</a>
+           </li>
+           <li>
+              <a href="https://www.pdfescape.com/open/?18D67187C3C556286D999F002584FB3C293CC89CBF91DF28", target="_blank">DECLARACAO</a>
+          </li>
+          <li>
+              <a href="https://www.pdfescape.com/open/?38749A1BF7F8F768BDE51709C9F6F0643FE259972E201889", target="_blank">Autorizacao Viaja Menor02</a>
+          </li>
+          <li>
+              <a href="https://www.pdfescape.com/open/?99AF57B7721FB1EBDF2794E166FEAED606A91A4E705A8F61", target="_blank">FORMULAIRE DE CONSENTEMENT OIM</a>
+          </li>
+          <li>
+               <a href="https://ec-portoprincipe.itamaraty.gov.br/instructions?id=6179576d724f950014c50412", target="_blank">Menor viajar esde Brasil</a>
+             </li>
+             <li><a href="https://www.google.com.br/url?sa=t&source=web&rct=j&url=https://www.fau.usp.br/wp-content/uploads/2021/01/Declaracao-de-endereco-eletronico-e-demais-meios-de-contato.pdf&ved=2ahUKEwj_qP-K1uv1AhW3D7kGHXV2DiYQFnoECAQQAQ&usg=AOvVaw1wXhmkOYpY-c9_Q5GwIBpw", target="_blank">Declaracao da residencia</a>
+             </li>
+         </ul>
+          
+           <div>
+        
+          </div> 
+          </div>
+
+
+          <!-- UTEIS -->
+          <div class="webPage">
+<h5>TRANSFERT</h5>
+          <ul>
+           <li class="">
+                <a href="https://remessaexpressa.cotacao.com.br/", target="_blank">Remessa Expressa</a>
+            </li>
+            <li class="">
+                <a href="https://www.moresistemas.com:5701/hmaster.aspx", target="_blank">More</a>
+            </li>
+            <li class="">
+                <a href="https://bigimage.11zon.com/es/image-resize/online-photo-resizer.php", target="_blank">Img Size</a>
+            </li>
+            <li class="">
+                <a href="https://docs.google.com/spreadsheets/d/1vDqhIfHCHx24LgKfZUA72EPZG49VuqHh/edit#gid=2081218285", target="_blank">VOUCHER</a>
+            </li>
+
             
-            // Garantir qu'une section est toujours visible au chargement
-            if (!document.querySelector('.content-section.active')) {
-                document.getElementById('utiles').classList.add('active');
-                document.querySelector('.nav-button[data-target="utiles"]').classList.add('active');
-                currentActiveSection = document.getElementById('utiles');
-            }
-        });
-    </script>
+            <li class="">
+                <a href="https://ib.rendimento.com.br/Acesso?i=240235028", target="_blank">Rendimento OnLine</a>
+              </li>
+              <li class="">
+                <a href="https://www.cambiorendimento.com.br/?i=24023502880", target="_blank">Rendimento Cambio</a>
+              </li>
+          </ul>
+  <h5>PJ</h5>
+          <ul>
+          <li class="tooltip">
+                <a href="http://www8.receita.fazenda.gov.br/SimplesNacional/Aplicacoes/ATSPO/pgmei.app/Identificacao", target="_blank">DAS</a>
+              </li> /
+           <li class="tooltip">
+                <a href="http://notadomilhao.prefeitura.sp.gov.br/empresas", target="_blank">NFS-e</a>
+              </li> /
+              <li class="tooltip">
+                <a href="http://www.sintegra.gov.br", target="_blank">I.E.</a>
+              </li> /
+              <li class="tooltip">
+                <a href="https://www.gov.br/empresas-e-negocios/pt-br", target="_blank">CNPJ</a>
+              </li>
+          </ul>
+<h5>ÚTEIS</h5>
+        <ul class="ligneLi" style="list-style-type:;">
+          
+           <li class="tooltip">
+                <a href="https://writer.zoho.com/writer/documents", target="_blank">WORD</a>
+              </li> /
+              
+              
+              <li class="tooltip">
+                <a href="https://cryptpad.fr/drive/#", target="_blank">word 02 free</a>
+              </li> /
+              <li class="tooltip">
+                <a href="https://www.youtube.com/", target="_blank">YouTube</a>
+              </li>/
+              <li class="tooltip">
+                   <a href="https://www.facebook.com/", target="_blank">Facebook</a>
+              </li> /
+              <li class="tooltip">
+                <span class="tooltiptext">Juntar arquivos PDF / Grouper les fichiers PDF</span>
+                  <a href="https://www.ilovepdf.com/pt", target="_blank">iLovePDF</a>
+              </li> /
+              <li class="tooltip">
+                <span class="tooltiptext">Juntar arquivos PDF / Grouper les fichiers PDF</span>
+                  <a href="https://www.iloveimg.com/fr", target="_blank">iLoveImage</a>
+              </li> /
+              <li class="tooltip">
+                <span class="tooltiptext">L'outil gratuit unique d'édition de PDF et de remplissage de formulaires en ligne.</span>
+                  <a href="https://www.pdfescape.com/fr/", target="_blank">PDF Scape</a>
+              </li> /
+              <li class="tooltip">
+                <span class="tooltiptext">Short links,Big resulta. A URL shortener built with powerful tools to help you grow and protect your brand</span>
+                  <a href="https://bitly.com/", target="_blank">BITLY</a>
+              </li> /
+              <li class="tooltip">
+                <span class="tooltiptext">Gerador de link para Whatsapp</span>
+                  <a href="https://www.convertte.com.br/gerador-link-whatsapp/", target="_blank">Covertte Go</a>
+              </li> /
+               <li class="tooltip">
+                <span class="tooltiptext">Short links,Big resulta. A URL shortener built with powerful tools to help you grow and protect your brand</span>
+                  <a href="https://linktr.ee/s/linktree-for-brazil/?utm_source=google&utm_medium=cpc&utm_campaign=BAU_BR_Google_Search_Brand_Intent_Local&utm_term=linktree&utm_content=BAU_BR_Google_Search_Brand_Intent_Local_Linktree&gclid=Cj0KCQiAjc2QBhDgARIsAMc3SqSUqakJZtiHxIBDPdC_vEfFcfHyKB8WkbNQCnSbeoQ1QLVZsgtdpy4aAu37EALw_wcB", target="_blank">LinkTree</a>
+              </li> /
+              <li class="tooltip">
+                <span class="tooltiptext">Permet de copier le text d'un fichier PDF.</span>
+                <a href="https://lightpdf.com/pdf-to-txt", target="_blank">LightPDF</a>
+              </li> /
+              <li class="tooltip">
+                <span class="tooltiptext">Sélecteur de codes de couleur
+                 Outil gratuit pour obtenir le code couleur HEX de l’image.</span>
+                <a href="https://www.site24x7.com/fr/tools/selecteur-de-code-couleur.html", target="_blank">Site24x7</a>
+              </li> /
+               <li class="tooltip">
+                  <a href="https://en.savefrom.net/1-youtube-video-downloader-52/", target="_blank">Youtube download </a>
+              </li> /
+              <li class="tooltip">
+                  <a href="https://yt5s.com/en38/youtube-to-mp3", target="_blank">Youtube to mp3</a>
+              </li> /
+              <li>
+              <a href="http://portoprincipe.itamaraty.gov.br/fr/a_propos_des_visas.xml", target="_blank">Emb. Brasil en Haiti</a>
+          </li>
+           <li>
+             <a href="https://ambassadehaitibresil.org/embaixada-do-haiti-equivalencia-da-carteira-de-motorista/", target="_blank">Emb. Haiti en Brasil</a>
+          </li>
+          <li>
+              <a href="https://haiti.iom.int/", target="_blank">OIM en Haiti</a>
+          </li>
+          <li>
+              <a href="https://www.gov.br/mre/pt-br/assuntos/representacoes/estrangeiras-no-brasil", target="_blank">Embaixadas/Consulados estrangeiros no Brasil</a>
+          </li>
+          <li>
+              <a href="https://www.regularize.pgfn.gov.br/", target="_blank">regularize debito</a>
+          </li>
+          <li>
+              <a href="https://www.gov.br/pt-br", target="_blank">Gov.br</a>
+          </li>
+          <li>
+              <a href="http://www.sedep.com.br/modelos-de-contra", target="_blank">Modelos de Contratos</a>
+          </li>
+          <li>
+              <a href="https://www.gerarpix.com.br/", target="_blank">CREAT QR CODE</a>
+          </li>
+          <li>
+              <a href="https://barcode.tec-it.com/fr/", target="_blank">CREAT CODE-BARRE</a>
+          </li>
+          <li>
+              <a href="https://www.xoom.com/haiti/send-money", target="_blank">ZOOM</a>
+          </li>
+          <li>
+              <a href="https://www.paypal.com/myaccount/summary", target="_blank">PAYPAL</a>
+          </li>
+          <li>
+              <a href="https://ec-portoprincipe.itamaraty.gov.br/", target="_blank">Service consular Ayiti Brasil</a>
+          </li>
+          <li>
+              <a href="https://modeloinicial.com.br/peticao/contrato-social-empresa-limitada", target="_blank">Contrtos modelos</a>
+          </li>
+          
+          </ul>
+  <h5 >RubMax</h5>
+            <ul>
+              <li >
+                  <a href="https://wa.me/message/UXBHRZMMYYPID1", target="_blank">Whasapp</a>
+              </li>
+              <li >
+                  <a href="https://www.youtube.com/channel/UCi1vi_4cwvw2TCa9LImryCQ", target="_blank">YouTube</a>
+              </li>
+              <li >
+                  <a href="https://www.facebook.com/RubMax01/", target="_blank">Facebook Page</a>
+              </li>
+              <li>
+                <a href="https://linktr.ee/admin/settings?q=%2Fadmin%2Fsettings#Settings--SupportBanner", target="_blank">LinkTree</a>
+              </li>
+              <li class="tooltip">
+                <span class="tooltiptext">Sur ce fichier Exel on trouve les comptes Gmail creer pour les clients</span>
+                <a  href="https://docs.google.com/spreadsheets/d/1mi_VmHvk2ss17X2y_ko8PvpwuvPhoorOWremLJpmTCc/edit?usp=sharing", target="_blank">Contas Clientes
+                </a>
+              </li>
+              <li>
+                <a href="https://drive.google.com/drive/u/0/folders/1RVl80QrIofMShqcNzKbDDS5TOl3d8X_P", target="_blank">Modeles CV</a>
+              </li>
+              <li>
+                <a href="https://docs.google.com/document/d/1ZtiHRrCrcBlcRtUxZFXSJzZMYAkOWADwi1XiTUpxH5s/edit", target="_blank">Clients debts</a>
+              </li>
+              <li>
+                <a href="https://docs.google.com/document/d/1ZtiHRrCrcBlcRtUxZFXSJzZMYAkOWADwi1XiTUpxH5s/edit", target="_blank">Incription Portugaise</a>
+              </li>
+              <li>
+                <a href="https://drive.google.com/drive/u/0/my-drive", target="_blank">MeuDrive</a>
+              </li>
+              <li>
+                <a href="https://www.remessaonline.com.br/entrar/pessoa-juridica", target="_blank">RemesaOnline</a>
+              </li>
+            </ul>
+  </div>
+</div>
+
+</div> <!--Fin Set Page -->
 </body>
+<!-- Pied de la page........................ -->
+<footer>
+  <div id="conteneurPied">
+    <div class="txtPied">
+        <p><b><u>RubMax Servicos</u><br>CNPJ: 40.082.272/0001-00<br>Copyright © 2022 Servicos international <br>Av. Bento Guelfi, 1260 CEP: 08381-001 Jardim das Laranjeiras / SP.</b></p>
+    </div>
+  </div>
+</footer>
+  </body>
+
 </html>
-
-
-
-
-
-
-
-
 
 
