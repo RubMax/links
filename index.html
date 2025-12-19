@@ -544,8 +544,7 @@
             }
         }
 
-        .modal { display: none; position: fixed; z-index: 1; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); }
-        .modal-content { background: white; margin: 15% auto; padding: 20px; width: 300px; }
+        
     </style>
 </head>
 <body>
@@ -1219,40 +1218,10 @@
             }
         });
 
-        // 1. Vérifier les rappels au chargement de la page
-        window.onload = async () => {
-            const response = await fetch(API_URL);
-            const rappels = await response.json();
-            const aujourdhui = new Date().toISOString().split('T')[0];
-
-            rappels.forEach(r => {
-                // Condition : Si aujourd'hui est entre début et fin ET statut est "oui"
-                if (r.Statut === true && aujourdhui >= r.DateDebut && aujourdhui <= r.DateFin) {
-                    alert(`RAPPEL : ${r.Titre}\n\n${r.Details}`);
-                }
-            });
-        };
-
-        // 2. Fonction pour enregistrer
-        async function saveRappel() {
-            const data = {
-                titre: document.getElementById('titre').value,
-                details: document.getElementById('details').value,
-                dateDebut: document.getElementById('dateDebut').value,
-                dateFin: document.getElementById('dateFin').value,
-                statut: document.getElementById('statut').checked
-            };
-
-            await fetch(API_URL, {
-                method: 'POST',
-                body: JSON.stringify(data)
-            });
-
-            alert("Rappel enregistré !");
-            location.reload();
     </script>
 </body>
 </html>
+
 
 
 
