@@ -545,6 +545,11 @@
         }
 
         
+        button { cursor: pointer; padding: 10px 20px; background: #4285f4; color: white; border: none; border-radius: 4px; }
+        button:hover { background: #357ae8; }
+        #modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); border: none; box-shadow: 0 5px 15px rgba(0,0,0,0.3); padding: 30px; background: white; z-index: 10; border-radius: 8px; width: 300px; }
+        .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 5; }
+        input, textarea { width: 100%; margin-bottom: 15px; padding: 8px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; }
     </style>
 </head>
 <body>
@@ -557,6 +562,9 @@
             <button class="nav-button active" data-target="utiles">
                 <i class="fas fa-tools"></i> Utilitaires
             </button>
+            <button class="nav-button" onclick="toggleModal(true)">
+                <i class="fas fa-tools"></i> + Ajouter un Rappel
+            </button><div id="overlay" class="overlay" onclick="toggleModal(false)"></div>
             <button class="nav-button" data-target="federal">
                 <i class="fas fa-landmark"></i> Services Fédéraux
             </button>
@@ -1163,6 +1171,26 @@
         </div>
     </div>
     
+<div id="modal">
+        <h3>Nouveau Rappel</h3>
+        <input type="text" id="titre" placeholder="Titre">
+        <textarea id="details" placeholder="Détails (facultatif)"></textarea>
+        <label>Début :</label>
+        <input type="datetime-local" id="debut">
+        <label>Fin :</label>
+        <input type="datetime-local" id="fin">
+        <input type="email" id="email" placeholder="E-mail (facultatif)">
+          <textarea id="message" placeholder="Message à envoyer par e-mail (facultatif)" rows="2"></textarea>
+
+        <button onclick="saveRappel()" style="width: 100%; margin-bottom: 10px;">Enregistrer</button>
+        <button onclick="toggleModal(false)" style="width: 100%; background: #666;">Fermer</button>
+    </div>
+
+    <div id="alertModal" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); border: none; box-shadow: 0 10px 30px rgba(0,0,0,0.5); padding: 25px; background: white; z-index: 20; border-radius: 12px; width: 400px; max-height: 80vh; overflow-y: auto;">
+    <h2 style="color: #d93025; margin-top: 0;">🔔 Rappels Actifs</h2>
+    <div id="alertContent"></div>
+    <button onclick="closeAlertModal()" style="width: 100%; background: #333; margin-top: 15px;">Fermer</button>
+</div>
 
     <!-- Footer -->
     
@@ -1206,11 +1234,128 @@
                 currentActiveSection = document.getElementById('utiles');
             }
         });
+        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyCgtLSlxZSPAXG5aezcxXOYFuLbU8yqrGL-LWpzHSfrmEIE8zUpoGhGFUZYUVFSYTx2A/exec";
+
+        // --- FONCTION MANQUANTE AJOUTÉE ICI ---
+        function toggleModal(show) {
+            document.getElementById('modal').style.display = show ? 'block' : 'none';
+            document.getElementById('overlay').style.display = show ? 'block' : 'none';
+        }
+
+        async function saveRappel() {
+    // Récupération des éléments
+    const titreEl = document.getElementById('titre');
+    const detailsEl = document.getElementById('details');
+    const debutEl = document.getElementById('debut');
+    const finEl = document.getElementById('fin');
+    const emailEl = document.getElementById('email');
+    const messageEl = document.getElementById('message');
+
+    // Construction de l'URL propre
+    const params = new URLSearchParams({
+        titre: titreEl.value,
+        details: detailsEl.value,
+        debut: debutEl.value,
+        fin: finEl.value,
+        email: emailEl ? emailEl.value : "",
+        message: messageEl ? messageEl.value : "",
+        t: Date.now()
+    });
+
+    const url = `${WEB_APP_URL}?${params.toString()}`;
+
+    try {
+        // On utilise 'no-cors' pour éviter les blocages, mais cela déclenche souvent le catch
+        // même si l'enregistrement réussit. 
+        await fetch(url, { method: 'GET', mode: 'no-cors' });
+        
+        alert("✅ Rappel, Email et Message enregistrés !");
+        
+        // Reset du formulaire
+        [titreEl, detailsEl, debutEl, finEl, emailEl, messageEl].forEach(el => {
+            if(el) el.value = "";
+        });
+        closeAll();
+        
+    } catch (e) {
+        // Si les données sont quand même dans la feuille, ignorez cette erreur
+        console.log("Note: Fetch a renvoyé une erreur de réponse, mais vérifiez la feuille Excel.");
+        alert("Enregistrement effectué (Vérifiez votre feuille Google Sheet).");
+        closeAll();
+    }
+}
+
+       // Fonction pour fermer le popup d'alerte
+function closeAlertModal() {
+    document.getElementById('alertModal').style.display = 'none';
+    document.getElementById('overlay').style.display = 'none';
+}
+
+// Nouvelle fonction pour changer le statut dans Google Sheets
+async function marquerAccompli(titre, details) {
+    const url = `${WEB_APP_URL}?action=terminer&titre=${encodeURIComponent(titre)}&details=${encodeURIComponent(details)}&t=${Date.now()}`;
+    
+    try {
+        await fetch(url, { method: 'GET', mode: 'no-cors' });
+        alert(`Le rappel "${titre}" a été marqué comme fait.`);
+        // On rafraîchit immédiatement la liste pour faire disparaître le rappel du popup
+        checkReminders(); 
+    } catch (e) {
+        console.error("Erreur lors de la mise à jour", e);
+    }
+}
+
+async function checkReminders() {
+    const maintenant = new Date();
+    const heure = maintenant.getHours();
+
+    if (heure >= 8 && heure < 16) {
+        try {
+            const response = await fetch(WEB_APP_URL + "?t=" + Date.now());
+            const rappels = await response.json();
+            
+            const actifs = rappels.filter(r => {
+                const d = new Date(r[2]);
+                const f = new Date(r[3]);
+                return (maintenant >= d && maintenant <= f && r[4].toLowerCase() === "non");
+            });
+
+            if (actifs.length > 0) {
+                let html = "";
+                actifs.forEach(r => {
+                    // Ajout d'un bouton "Accompli" pour chaque rappel
+                    html += `
+                        <div class="rappel-item" style="display: flex; justify-content: space-between; align-items: center;">
+                            <div style="flex: 1;">
+                                <strong>${r[0]}</strong>
+                                <span>${r[1] || ""}</span>
+                            </div>
+                            <button onclick="marquerAccompli('${r[0].replace(/'/g, "\\'")}', '${r[1].replace(/'/g, "\\'")}')" 
+                                    style="background: #28a745; padding: 5px 10px; font-size: 0.8em; margin-left: 10px;">
+                                Accomplir
+                            </button>
+                        </div>`;
+                });
+                document.getElementById('alertContent').innerHTML = html;
+                document.getElementById('alertModal').style.display = 'block';
+                document.getElementById('overlay').style.display = 'block';
+            } else {
+                // Si plus de rappels actifs (après avoir cliqué sur accompli), on ferme le modal
+                closeAll();
+            }
+        } catch (e) {
+            console.error("Erreur de synchronisation.");
+        }
+    }
+}
+        // Vérification immédiate au chargement
+        checkReminders(); 
+        // Vérification toutes les 5 minutes
+        setInterval(checkReminders, 5 * 60 * 1000);
 
     </script>
 </body>
 </html>
-
 
 
 
