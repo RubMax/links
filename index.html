@@ -1,106 +1,1177 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
 <head>
-    <title>Gestionnaire de Rappels</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>RubMax Servicos - Tableau de Bord</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 20px; background-color: #f4f4f9; }
+        /* Variables de couleurs */
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --light-color: #ecf0f1;
+            --dark-color: #2c3e50;
+            --success-color: #27ae60;
+            --hover-color: #2980b9;
+            --border-color: #bdc3c7;
+        }
+        
+        /* Reset et styles de base */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        #setPage {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            width: 100%;
+            flex: 1;
+        }
+        
+        /* Header */
+        header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 25px 0;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        
+        #conteneurEntete {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .logo-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .logo-container h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+        }
+        
+        .logo-container p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            max-width: 700px;
+            line-height: 1.5;
+        }
+        
+        /* Barre de navigation avec boutons */
+        .nav-container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .nav-button {
+            background-color: var(--light-color);
+            border: none;
+            padding: 12px 20px;
+            border-radius: 50px;
+            font-weight: 600;
+            color: var(--dark-color);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex: 1;
+            min-width: 180px;
+            justify-content: center;
+        }
+        
+        .nav-button:hover {
+            background-color: var(--secondary-color);
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        .nav-button.active {
+            background-color: var(--secondary-color);
+            color: white;
+            box-shadow: 0 4px 8px rgba(52, 152, 219, 0.3);
+        }
+        
+        .nav-button i {
+            font-size: 1rem;
+        }
+        
+        /* Conteneur principal */
+        .main-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            min-height: 400px;
+        }
+        
+        /* Sections de contenu - TOUJOURS UNE SEULE VISIBLE */
+        .content-section {
+            background-color: white;
+            border-radius: 10px;
+            padding: 0;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            display: none; /* Par défaut toutes cachées */
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .content-section.active {
+            display: block; /* Seule la section active est visible */
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .section-header {
+            background: linear-gradient(to right, var(--primary-color), var(--dark-color));
+            color: white;
+            padding: 18px 25px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .section-header i {
+            font-size: 1.3rem;
+        }
+        
+        .section-header h2 {
+            font-size: 1.4rem;
+            font-weight: 600;
+        }
+        
+        .section-content {
+            padding: 25px;
+            min-height: 300px;
+        }
+        
+        /* Grille des liens */
+        .links-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 15px;
+        }
+        
+        .link-card {
+            background-color: var(--light-color);
+            border-radius: 8px;
+            padding: 18px;
+            transition: all 0.3s ease;
+            border-left: 4px solid var(--secondary-color);
+            position: relative;
+            height: 100%;
+        }
+        
+        .link-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border-left-color: var(--accent-color);
+        }
+        
+        .link-card a {
+            color: var(--dark-color);
+            text-decoration: none;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .link-card a:hover {
+            color: var(--secondary-color);
+        }
+        
+        .link-card i {
+            color: var(--secondary-color);
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+        
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 200px;
+            background-color: var(--dark-color);
+            color: white;
+            text-align: center;
+            border-radius: 6px;
+            padding: 8px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.85rem;
+            font-weight: normal;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        .tooltip .tooltiptext::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: var(--dark-color) transparent transparent transparent;
+        }
+        
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+        
+        /* Footer */
+        footer {
+            background: linear-gradient(135deg, #1a252f, #2c3e50);
+            color: #ecf0f1;
+            padding-top: 40px;
+            margin-top: 40px;
+            width: 100%;
+        }
+
+        #conteneurPied {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-column {
+            padding: 0 15px;
+        }
+
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .footer-logo i {
+            font-size: 2.2rem;
+            color: #3498db;
+            background: rgba(52, 152, 219, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+        }
+
+        .footer-logo h3 {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .contact-info p {
+            margin-bottom: 12px;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .contact-info i {
+            color: #3498db;
+            min-width: 20px;
+            margin-top: 3px;
+        }
+
+        .footer-column h4 {
+            color: #fff;
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid rgba(52, 152, 219, 0.3);
+            position: relative;
+        }
+
+        .footer-column h4::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 60px;
+            height: 2px;
+            background: #3498db;
+        }
+
+        .footer-links {
+            list-style: none;
+            padding: 0;
+        }
+
+        .footer-links li {
+            margin-bottom: 12px;
+        }
+
+        .footer-links a {
+            color: #bdc3c7;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            padding: 5px 0;
+        }
+
+        .footer-links a:hover {
+            color: #3498db;
+            transform: translateX(5px);
+        }
+
+        .footer-links i {
+            font-size: 0.8rem;
+            color: #3498db;
+        }
+
+        .opening-hours p {
+            margin-bottom: 10px;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .opening-hours strong {
+            color: #fff;
+            display: inline-block;
+            min-width: 120px;
+        }
+
+        .social-links {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .social-btn {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 15px;
+            border-radius: 8px;
+            text-decoration: none;
+            color: white;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border: none;
+        }
+
+        .social-btn i {
+            font-size: 1.2rem;
+        }
+
+        .social-btn.whatsapp {
+            background: linear-gradient(135deg, #25D366, #128C7E);
+        }
+
+        .social-btn.facebook {
+            background: linear-gradient(135deg, #1877F2, #0A5BC4);
+        }
+
+        .social-btn.youtube {
+            background: linear-gradient(135deg, #FF0000, #CC0000);
+        }
+
+        .social-btn.email {
+            background: linear-gradient(135deg, #EA4335, #D14836);
+        }
+
+        .social-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            opacity: 0.9;
+        }
+
+        /* Footer bottom */
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 25px 0;
+            text-align: center;
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .copyright p {
+            color: #95a5a6;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+        }
+
+        .legal-links {
+            margin-top: 15px;
+        }
+
+        .legal-links a {
+            color: #bdc3c7;
+            text-decoration: none;
+            margin: 0 10px;
+            font-size: 0.85rem;
+            transition: color 0.3s ease;
+        }
+
+        .legal-links a:hover {
+            color: #3498db;
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .nav-button {
+                min-width: 160px;
+            }
+        }
+        
+        @media (max-width: 992px) {
+            .nav-button {
+                min-width: 140px;
+            }
+            
+            .links-grid {
+                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .nav-container {
+                flex-direction: column;
+            }
+            
+            .nav-button {
+                width: 100%;
+                min-width: unset;
+            }
+            
+            .links-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .logo-container h1 {
+                font-size: 1.8rem;
+            }
+            
+            .footer-content {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+            
+            .footer-column {
+                padding: 0;
+            }
+            
+            .social-links {
+                grid-template-columns: repeat(4, 1fr);
+            }
+            
+            .legal-links a {
+                display: block;
+                margin: 5px 0;
+            }
+        }
+
+        @media (max-width: 480px) {
+            #setPage {
+                padding: 10px;
+            }
+            
+            .logo-container h1 {
+                font-size: 1.6rem;
+            }
+            
+            .logo-container p {
+                font-size: 1rem;
+            }
+            
+            .section-content {
+                padding: 15px;
+            }
+            
+            .social-links {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .footer-logo {
+                flex-direction: column;
+                text-align: center;
+                gap: 10px;
+            }
+        }
+
+        
         button { cursor: pointer; padding: 10px 20px; background: #4285f4; color: white; border: none; border-radius: 4px; }
         button:hover { background: #357ae8; }
-        
-        /* Modal pour ajouter des rappels */
-        #modal { 
-            display: none; 
-            position: fixed; 
-            top: 50%; 
-            left: 50%; 
-            transform: translate(-50%, -50%); 
-            border: none; 
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3); 
-            padding: 30px; 
-            background: white; 
-            z-index: 10; 
-            border-radius: 8px; 
-            width: 300px; 
-        }
-        
-        /* Modal pour alertes */
-        #alertModal { 
-            display: none; 
-            position: fixed; 
-            top: 50%; 
-            left: 50%; 
-            transform: translate(-50%, -50%); 
-            border: none; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5); 
-            padding: 25px; 
-            background: white; 
-            z-index: 20; 
-            border-radius: 12px; 
-            width: 400px; 
-            max-height: 80vh; 
-            overflow-y: auto; 
-        }
-        
-        .overlay { 
-            display: none; 
-            position: fixed; 
-            top: 0; 
-            left: 0; 
-            width: 100%; 
-            height: 100%; 
-            background: rgba(0,0,0,0.5); 
-            z-index: 5; 
-        }
-        
-        input, textarea { 
-            width: 100%; 
-            margin-bottom: 15px; 
-            padding: 8px; 
-            box-sizing: border-box; 
-            border: 1px solid #ccc; 
-            border-radius: 4px; 
-        }
-        
-        .rappel-item { 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            padding: 10px 0;
-            border-bottom: 1px solid #eee;
-        }
-        
-        #notificationBadge {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: #d93025;
-            color: white;
-            padding: 10px 15px;
-            border-radius: 20px;
-            cursor: pointer;
-            display: none;
-            z-index: 15;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
-        }
+        #modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); border: none; box-shadow: 0 5px 15px rgba(0,0,0,0.3); padding: 30px; background: white; z-index: 10; border-radius: 8px; width: 300px; }
+        .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 5; }
+        input, textarea { width: 100%; margin-bottom: 15px; padding: 8px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; }
     </style>
 </head>
 <body>
+    <div id="setPage">
+        <!-- Header -->
+       
 
-    <h2>Mes Rappels</h2>
-    <button onclick="openAddModal()">+ Ajouter un Rappel</button>
-    <button onclick="showActiveReminders()" style="background: #d93025; margin-left: 10px;">
-        Voir les rappels actifs
-    </button>
+        <!-- Barre de navigation -->
+        <div class="nav-container">
+            <button class="nav-button active" data-target="utiles">
+                <i class="fas fa-tools"></i> Utilitaires
+            </button>
+            <button class="nav-button" onclick="toggleModal(true)">
+                <i class="fas fa-tools"></i> + Ajouter un Rappel
+            </button><div id="overlay" class="overlay" onclick="toggleModal(false)"></div>
+            <button class="nav-button" data-target="federal">
+                <i class="fas fa-landmark"></i> Services Fédéraux
+            </button>
+            <button class="nav-button" data-target="rne">
+                <i class="fas fa-passport"></i> RNE / Migrations
+            </button>
+            <button class="nav-button" data-target="hospital">
+                <i class="fas fa-hospital"></i> Santé / Hôpital
+            </button>
+            <button class="nav-button" data-target="boletos">
+                <i class="fas fa-file-invoice-dollar"></i> Factures / Boletos
+            </button>
+            <button class="nav-button" data-target="transfert">
+                <i class="fas fa-exchange-alt"></i> Transferts
+            </button>
+            <button class="nav-button" data-target="pj">
+                <i class="fas fa-briefcase"></i> Entreprise (PJ)
+            </button>
+            <button class="nav-button" data-target="docs">
+                <i class="fas fa-file"></i> Documents
+            </button>
 
-    <!-- Badge de notification -->
-    <div id="notificationBadge" onclick="showActiveReminders()">
-        <span id="reminderCount">0</span> rappel(s) actif(s)
+            <button class="nav-button" data-target="rubmax">
+                <i class="fas fa-user-tie"></i> RubMax
+            </button>
+            
+        </div>
+
+        <!-- Contenu principal - UNE SEULE SECTION VISIBLE À LA FOIS -->
+        <div class="main-container">
+            <!-- Section Utilitaires -->
+            <section id="utiles" class="content-section active">
+                <div class="section-header">
+                    <i class="fas fa-tools"></i>
+                    <h2>Utilitaires en Ligne</h2>
+                </div>
+                <div class="section-content">
+                    <div class="links-grid">
+                        <div class="link-card">
+                            <a href="https://web.whatsapp.com" target="_blank">
+                                <span>Whatsapp</span>
+                                <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </div>
+                        <div class="link-card">
+                            <a href="https://script.google.com/macros/s/AKfycbzDa0WONITev7GJhplsixNzIFfDBxsRwGWxO4d--9w94bxpNDgC0amGEHTuAOOnK92LUw/exec" target="_blank">
+                                <span>Gestion Colis</span>
+                                <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </div>
+                                                <div class="link-card">
+                            <a href="https://script.google.com/macros/s/AKfycbyfEwMJewSgFOlEg8GGr1vS5jGKxwRuOLLoZzqrz0dZpychtBNqSfyRm-p0r-U0Ery4fw/exec" target="_blank">
+                                <span>Rappelles</span>
+                                <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </div>
+                        <div class="link-card">
+                            <a href="https://www.ilovepdf.com/pt" target="_blank">
+                                <span>iLovePDF</span>
+                                <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </div>
+                        <div class="link-card">
+                            <a href="https://www.pdfescape.com/fr/" target="_blank">
+                                <span>PDF Scape</span>
+                                <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </div>
+                        <div class="link-card">
+                            <a href="https://bitly.com/" target="_blank">
+                                <span>BITLY (raccourcisseur d'URL)</span>
+                                <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </div>
+                        <div class="link-card">
+                            <a href="https://lightpdf.com/pdf-to-txt" target="_blank">
+                                <span>LightPDF (PDF vers texte)</span>
+                                <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </div>
+                        <div class="link-card">
+                            <a href="https://yt5s.com/en38/youtube-to-mp3" target="_blank">
+                                <span>YouTube vers MP3</span>
+                                <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </div>
+                        <div class="link-card">
+                            <a href="https://pt.idphoto4you.com/" target="_blank">
+                                <span>Photo 3x4</span>
+                                <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </div>
+                        <div class="link-card">
+                            <a href="https://www.remove.bg/pt-br/upload" target="_blank">
+                                <span>Remove BG</span>
+                                <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </div>
+                        <div class="link-card">
+                            <a href="https://png2jpg.com" target="_blank">
+                                <span>PNG to JPG</span>
+                                <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </div>
+                        <div class="link-card">
+                            <a href="https://www.gov.br/pt-br" target="_blank">
+                                <span>Gov.br (Portail gouvernemental)</span>
+                                <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </div>
+                        <div class="link-card">
+                            <a href="https://www.gerarpix.com.br/" target="_blank">
+                                <span>Créer QR CODE</span>
+                                <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Les autres sections restent inchangées -->
+            <!-- Section Services Fédéraux -->
+            <section id="federal" class="content-section">
+                <div class="section-header">
+                    <i class="fas fa-landmark"></i>
+                    <h2>Services Fédéraux</h2>
+                </div>
+                <div class="section-content">
+                    <div class="links-grid">
+                        <div class="link-card">
+                            <a href="https://servicos.receita.fazenda.gov.br/Servicos/saga/agendamento/" target="_blank">
+                                <span>1ère voie CPF Agenda</span>
+                                <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </div>
+                        <div class="link-card tooltip">
+                            <a href="https://servicos.receita.fazenda.gov.br/servicos/cpf/impressaocomprovante/consultaimpressao.asp" target="_blank">
+                                <span>2ème voie CPF</span>
+                                <i class="fas fa-external-link-alt"></i>
+                            </a>
+                            <span class="tooltiptext">Documents requis:<br>1- Brésilien CPF et Título de Eleitor<br>2- Étranger seulement CPF</span>
+                        </div>
+                        <div class="link-card">
+                            <a href="https://www.ipva.fazenda.sp.gov.br/ipvanet_consulta/consulta.aspx" target="_blank">
+                                <span>IPVA</span>
+                                <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </div>
+                        <div class="link-card">
+                            <a href="https://iptu.prefeitura.sp.gov.br/" target="_blank">
+                                <span>IPTU 2a via</span>
+                                <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </div>
+                        <div class="link-card">
+                            <a href="https://ppi.prefeitura.sp.gov.br/OpenForms/frmSegundaViaDAMSP.aspx" target="_blank">
+                                <span>PPI 2a via</span>
+                                <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </div>
+                        <div class="link-card">
+                            <a href="https://www.gov.br/receitafederal/pt-br/assuntos/meu-imposto-de-renda" target="_blank">
+                                <span>Imposto de Renda</span>
+                                <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </div>
+                        <div class="link-card">
+                            <a href="https://www.tse.jus.br/eleitor/autoatendimento-do-eleitor#/" target="_blank">
+                                <span>Titre Électeur Imprimer</span>
+                                <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </div>
+                        <div class="link-card">
+                            <a href="https://www.poupatempo.sp.gov.br/wps/portal/portalpoupatempo/servicos-online/" target="_blank">
+                                <span>Poupatempo Services</span>
+                                <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </div>
+                        <div class="link-card">
+                            <a href="https://servicos.mte.gov.br/#/trabalhador" target="_blank">
+                                <span>Carte de travail Digital</span>
+                                <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </div>
+                        <div class="link-card">
+                            <a href="https://www10.fazenda.sp.gov.br/CertidaoNegativaDeb/Pages/ImpressaoCertidaoNegativa.aspx" target="_blank">
+                                <span>Certidão Negativa Personne Physique</span>
+                                <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </div>
+                        <div class="link-card">
+                            <a href="https://servicos.dpf.gov.br/sinpa/inicializacaoSolicitacao.do?dispatch=inicializarSolicitacaoPassaporte" target="_blank">
+                                <span>Demande Passeport Brésilien</span>
+                                <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </div>
+                        <div class="link-card">
+                            <a href="https://www.delegaciaeletronica.policiacivil.sp.gov.br/ssp-de-cidadao/home" target="_blank">
+                                <span>Comunicar Ocorrência</span>
+                                <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Section RNE / Migrations -->
+            <section id="rne" class="content-section">
+                <div class="section-header">
+                    <i class="fas fa-passport"></i>
+                    <h2>RNE / Services Migratoires</h2>
+                </div>
+                <div class="section-content">
+                    <div class="links-grid">
+                        
+                        <div class="link-card">
+                            <a href="https://servicos.dpf.gov.br/sismigra-internet/home.seam?cid=6365" target="_blank">
+                                <span>RNM index</span>
+                                <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </div>
+                        <div class="link-card">
+                            <a href="https://servicos.dpf.gov.br/sismigra-internet/faces/publico/tipoSolicitacao/permanenciaRegistroEmissaoCie.seam" target="_blank">
+                                <span>RNM 1ère voie formulaire</span>
+                                <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </div>
+                        <div class="link-card">
+                            <a href="https://servicos.pf.gov.br/agenda-web/acessar" target="_blank">
+                                <span>Agenda/Re-agenda/Annuler</span>
+                                <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </div>
+                        <div class="link-card">
+                            <a href="https://antecedentes.dpf.gov.br/antecedentes-criminais/certidao" target="_blank">
+                                <span>Antécédents Criminels</span>
+                                <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </div>
+                        <div class="link-card">
+                            <a href="https://portaldeimigracao.mj.gov.br/pt/?option=com_content&view=article&layout=edit&id=401725" target="_blank">
+                                <span>MigranteWeb 2.0</span>
+                                <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </div>
+                        <div class="link-card">
+                            <a href="https://www.in.gov.br/consulta" target="_blank">
+                                <span>Diário Oficial da União</span>
+                                <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </div>
+                        <div class="link-card">
+                            <a href="https://formulario-mre.serpro.gov.br/sci/pages/web/ui/#/cidadao-nacionalidade" target="_blank">
+                                <span>Visto-Services Consulaires</span>
+                                <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </div>
+                        <div class="link-card">
+                            <a href="https://ec-portoprincipe.itamaraty.gov.br/" target="_blank">
+                                <span>Sistema e-consular</span>
+                                <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Section Santé / Hôpital -->
+            <section id="hospital" class="content-section">
+                <div class="section-header">
+                    <i class="fas fa-hospital"></i>
+                    <h2>Santé et Services Hospitaliers</h2>
+                </div>
+                <div class="section-content">
+                    <div class="links-grid">
+                        <div class="link-card">
+                            <a href="https://www.retireseuexame.com.br/retireseuexame/" target="_blank">
+                                <span>Retirer Examen</span>
+                                <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </div>
+                        <div class="link-card">
+                            <a href="https://conectesus-paciente.saude.gov.br/menu/home-default" target="_blank">
+                                <span>Certificat COVID-19</span>
+                                <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </div>
+                        <div class="link-card">
+                            <a href="https://conectesus-paciente.saude.gov.br/menu/home-default" target="_blank">
+                                <span>Carte Nationale de Vaccination</span>
+                                <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </div>
+                        <div class="link-card">
+                            <a href="https://conectesus-paciente.saude.gov.br/menu/home-default" target="_blank">
+                                <span>Carte du SUS</span>
+                                <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Section Factures / Boletos -->
+            <section id="boletos" class="content-section">
+                <div class="section-header">
+                    <i class="fas fa-file-invoice-dollar"></i>
+                    <h2>Factures et Services de Paiement</h2>
+                </div>
+                <div class="section-content">
+                    <div class="links-grid">
+                        <div class="link-card">
+                            <a href="https://meutim.tim.com.br/novo/login" target="_blank">
+                                <span>TIM - 2ème voie</span>
+                                <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </div>
+                        <div class="link-card">
+                            <a href="https://auth.netcombo.com.br/web/login.html" target="_blank">
+                                <span>CLARO - 2ème voie</span>
+                                <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </div>
+                        <div class="link-card">
+                            <a href="https://login.vivo.com.br/loginmarca/appmanager/marca/publico" target="_blank">
+                                <span>VIVO - 2ème voie</span>
+                                <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </div>
+                        <div class="link-card">
+                            <a href="https://agenciavirtual.sabesp.com.br/minhas-faturas" target="_blank">
+                                <span>SABESP 2ème voie</span>
+                                <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </div>
+                        <div class="link-card">
+                            <a href="https://www.eneldistribuicao.com.br/ce/AcessoRapidoSegundaVia.aspx" target="_blank">
+                                <span>ENEL 2ème voie</span>
+                                <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </div>
+                        <div class="link-card">
+                            <a href="https://www63.bb.com.br/portalbb/boleto/boletos/hc21e,802,3322,10343.bbx" target="_blank">
+                                <span>BANCO DO BRASIL</span>
+                                <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </div>
+                        <div class="link-card">
+                            <a href="https://www.itau.com.br/servicos/boletos/atualizar/" target="_blank">
+                                <span>ITAU/UNIBANCO</span>
+                                <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </div>
+                        <div class="link-card">
+                            <a href="https://www.santander.com.br/2-via-boleto" target="_blank">
+                                <span>SANTANDER</span>
+                                <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </div>
+                        <div class="link-card">
+                            <a href="https://www8.receita.fazenda.gov.br/SimplesNacional/Aplicacoes/ATSPO/pgmei.app/Identificacao" target="_blank">
+                                <span>Payer MEI/DAS</span>
+                                <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Section Transferts -->
+            <section id="transfert" class="content-section">
+                <div class="section-header">
+                    <i class="fas fa-exchange-alt"></i>
+                    <h2>Transferts d'Argent</h2>
+                </div>
+                <div class="section-content">
+                    <div class="links-grid">
+                        <div class="link-card">
+                            <a href="https://remessaexpressa.cotacao.com.br/" target="_blank">
+                                <span>Remessa Expressa</span>
+                                <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </div>
+                        <div class="link-card">
+                            <a href="https://www.moresistemas.com:5701/hmaster.aspx" target="_blank">
+                                <span>More</span>
+                                <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </div>
+                        <div class="link-card">
+                            <a href="https://www.dingconnect.com/fr-FR/Home" target="_blank">
+                                <span>Minit-Haiti</span>
+                                <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </div>
+                        <div class="link-card">
+                            <a href="https://mydhl.express.dhl/br/pt/home.html?cid=xbu_1.0_portal_login_exp#/getQuoteTab" target="_blank">
+                                <span>DHL</span>
+                                <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </div>
+                        <div class="link-card">
+                            <a href="https://wupos2lb.westernunion.com/web-ui/login" target="_blank">
+                                <span>WU</span>
+                                <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </div>
+                         <div class="link-card">
+                            <a href="https://portal-wu.inpaas.com/api/ckb-portal-online/western-union/pt/artigos/detalhe-do-ticket.html?id_ticket=669463" target="_blank">
+                                <span>WU-CHAMADA</span>
+                                <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </div>
+                        <div class="link-card">
+                            <a href="https://western-union.plusoftomni.com.br/api/chatsite/site/-i0qS7clwFnwrEY-g3E1i8J4dvFC-mLyeErv6VJW6ppt4Pm7J4bHVQ==/client" target="_blank">
+                                <span>WU-CHAT</span>
+                                <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </div>
+                        <div class="link-card">
+                            <a href="https://ib.rendimento.com.br/Acesso?i=240235028" target="_blank">
+                                <span>Rendimento OnLine</span>
+                                <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </div>
+                        <div class="link-card">
+                            <a href="https://www.cambiorendimento.com.br/?i=24023502880" target="_blank">
+                                <span>Rendimento Cambio</span>
+                                <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </div>
+                        <div class="link-card">
+                            <a href="https://www.xoom.com/haiti/send-money" target="_blank">
+                                <span>ZOOM</span>
+                                <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </div>
+                        <div class="link-card">
+                            <a href="https://www.paypal.com/myaccount/summary" target="_blank">
+                                <span>PAYPAL</span>
+                                <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section Documents -->
+            <section id="docs" class="content-section">
+                <div class="section-header">
+                    <i class="fas fa-file"></i>
+                    <h2>Documents, autorisations etc...</h2>
+                </div>
+                <div class="section-content">
+                    <div class="links-grid">
+                        <div class="link-card">
+                            <a href="https://docs.google.com/document/d/1v4ZYOumuMIkvArT4jT0Ae7xzRlXTMmuUYkdKdMqRxjg/edit?tab=t.0" target="_blank">
+                                <span>Declaracao da residencia)</span>
+                                <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </div>
+                        <div class="link-card">
+                            <a href="https://ec-portoprincipe.itamaraty.gov.br/instructions?id=6179576d724f950014c50412" target="_blank">
+                                <span>Sistema e-consular Docs</span>
+                                <i class="fas fa-external-link-alt"></i>
+                            </a> 
+                        </div>
+                        <div class="link-card">
+                            <a href="https://servicos.pf.gov.br/epol-sinic-publico/" target="_blank">
+                                <span>Certidão Ant.Crim.-P.Gov</span>
+                                <i class="fas fa-external-link-alt"></i>
+                            </a> 
+                        </div>
+                        <div class="link-card">
+                            <a href="https://docs.google.com/document/d/1lJJt26PqNTT5Qbb_EVPWUbXLxgUK8Ii68SyPZe7ZGoE/edit?tab=t.0" target="_blank">
+                                <span>Carta de convite</span>
+                                <i class="fas fa-external-link-alt"></i>
+                            </a> 
+                        </div>
+                        <div class="link-card">
+                            <a href="https://docs.google.com/document/d/1GI7AcB_BzIhCu1aulIUlRQZb7f9gW-UbJ4c9Ap1yVCg/edit?tab=t.gqun4zqyrau3" target="_blank">
+                                <span>C V</span>
+                                <i class="fas fa-external-link-alt"></i>
+                            </a> 
+                        </div>
+                        <div class="link-card">
+                            <a href="https://docs.google.com/document/d/1fIfu457DN1wubtks0AL46VTidqLDrLyw_g-H_w5eWHM/edit?tab=t.0" target="_blank">
+                                <span>Declaração de Faturamento</span>
+                                <i class="fas fa-external-link-alt"></i>
+                            </a> 
+                        </div>
+                        <div class="link-card">
+                            <a href="https://docs.google.com/document/d/180rkVOvhRGbQzKYAo-z4Ym0qq14YTz_J8dG6_qbUwck/edit?tab=t.0" target="_blank">
+                                <span>COMPRA E VENDA</span>
+                                <i class="fas fa-external-link-alt"></i>
+                            </a> 
+                        </div>
+                        <div class="link-card">
+                            <a href="https://docs.google.com/document/d/1is7v8wicI-oHbx7OT9WeIBjmSDxJkJh3TeegccVTe3k/edit?tab=t.0" target="_blank">
+                                <span>CONTRATO DE TROCA</span>
+                                <i class="fas fa-external-link-alt"></i>
+                            </a> 
+                        </div>
+                        <div class="link-card">
+                            <a href="https://docs.google.com/document/d/13r0xNuhlFKEcuxJj4lkts-ci5wYcP3SDQiAAIYWGI6g/edit?tab=t.0" target="_blank">
+                                <span>LOCAÇÃO DE IMÓVEL COMERCIAL</span>
+                                <i class="fas fa-external-link-alt"></i>
+                            </a> 
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Section Entreprise (PJ) -->
+            <section id="pj" class="content-section">
+                <div class="section-header">
+                    <i class="fas fa-briefcase"></i>
+                    <h2>Entreprise (Pessoa Jurídica)</h2>
+                </div>
+                <div class="section-content">
+                    <div class="links-grid">
+                        <div class="link-card">
+                            <a href="http://www8.receita.fazenda.gov.br/SimplesNacional/Aplicacoes/ATSPO/pgmei.app/Identificacao" target="_blank">
+                                <span>DAS (Documento de Arrecadação)</span>
+                                <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </div>
+                        <div class="link-card">
+                            <a href="http://notadomilhao.prefeitura.sp.gov.br/empresas" target="_blank">
+                                <span>NFS-e (Nota Fiscal de Serviços)</span>
+                                <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </div>
+                        <div class="link-card">
+                            <a href="http://www.sintegra.gov.br" target="_blank">
+                                <span>Inscrição Estadual (I.E.)</span>
+                                <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </div>
+                        <div class="link-card">
+                            <a href="https://www.gov.br/empresas-e-negocios/pt-br" target="_blank">
+                                <span>CNPJ</span>
+                                <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Section RubMax -->
+            <section id="rubmax" class="content-section">
+                <div class="section-header">
+                    <i class="fas fa-user-tie"></i>
+                    <h2>RubMax Services</h2>
+                </div>
+                <div class="section-content">
+                    <div class="links-grid">
+                        <div class="link-card">
+                            <a href="https://wa.me/message/UXBHRZMMYYPID1" target="_blank">
+                                <span>WhatsApp RubMax</span>
+                                <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </div>
+                        <div class="link-card">
+                            <a href="https://www.youtube.com/channel/UCi1vi_4cwvw2TCa9LImryCQ" target="_blank">
+                                <span>YouTube RubMax</span>
+                                <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </div>
+                        <div class="link-card">
+                            <a href="https://www.facebook.com/RubMax01/" target="_blank">
+                                <span>Page Facebook RubMax</span>
+                                <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </div>
+                        <div class="link-card tooltip">
+                            <a href="https://docs.google.com/spreadsheets/d/1mi_VmHvk2ss17X2y_ko8PvpwuvPhoorOWremLJpmTCc/edit?usp=sharing" target="_blank">
+                                <span>Comptes Clients</span>
+                                <i class="fas fa-external-link-alt"></i>
+                            </a>
+                            <span class="tooltiptext">Fichier Excel avec les comptes Gmail créés pour les clients</span>
+                        </div>
+                        <div class="link-card">
+                            <a href="https://drive.google.com/drive/u/0/folders/1RVl80QrIofMShqcNzKbDDS5TOl3d8X_P" target="_blank">
+                                <span>Modèles CV</span>
+                                <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </div>
+                        <div class="link-card">
+                            <a href="https://docs.google.com/document/d/1ZtiHRrCrcBlcRtUxZFXSJzZMYAkOWADwi1XiTUpxH5s/edit" target="_blank">
+                                <span>Dettes Clients</span>
+                                <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </div>
+                        <div class="link-card">
+                            <a href="https://www.remessaonline.com.br/entrar/pessoa-juridica" target="_blank">
+                                <span>RemesaOnline</span>
+                                <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
     </div>
-
-    <div id="overlay" class="overlay" onclick="closeAll()"></div>
     
-    <!-- Modal pour ajouter un rappel -->
-    <div id="modal">
+<div id="modal">
         <h3>Nouveau Rappel</h3>
         <input type="text" id="titre" placeholder="Titre">
         <textarea id="details" placeholder="Détails (facultatif)"></textarea>
@@ -109,192 +1180,157 @@
         <label>Fin :</label>
         <input type="datetime-local" id="fin">
         <input type="email" id="email" placeholder="E-mail (facultatif)">
-        <textarea id="message" placeholder="Message à envoyer par e-mail (facultatif)" rows="2"></textarea>
+          <textarea id="message" placeholder="Message à envoyer par e-mail (facultatif)" rows="2"></textarea>
 
         <button onclick="saveRappel()" style="width: 100%; margin-bottom: 10px;">Enregistrer</button>
-        <button onclick="closeAll()" style="width: 100%; background: #666;">Fermer</button>
+        <button onclick="toggleModal(false)" style="width: 100%; background: #666;">Fermer</button>
     </div>
 
-    <!-- Modal pour les alertes -->
-    <div id="alertModal">
-        <h2 style="color: #d93025; margin-top: 0;">🔔 Rappels Actifs</h2>
-        <div id="alertContent"></div>
-        <button onclick="closeAll()" style="width: 100%; background: #333; margin-top: 15px;">Fermer</button>
-    </div>
+    <div id="alertModal" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); border: none; box-shadow: 0 10px 30px rgba(0,0,0,0.5); padding: 25px; background: white; z-index: 20; border-radius: 12px; width: 400px; max-height: 80vh; overflow-y: auto;">
+    <h2 style="color: #d93025; margin-top: 0;">🔔 Rappels Actifs</h2>
+    <div id="alertContent"></div>
+    <button onclick="closeAlertModal()" style="width: 100%; background: #333; margin-top: 15px;">Fermer</button>
+</div>
 
+    <!-- Footer -->
+    
     <script>
+        // Script pour la navigation par boutons - UNE SEULE SECTION VISIBLE À LA FOIS
+        document.addEventListener('DOMContentLoaded', function() {
+            const navButtons = document.querySelectorAll('.nav-button');
+            const contentSections = document.querySelectorAll('.content-section');
+            const API_URL = "https://script.google.com/macros/s/AKfycbyCgtLSlxZSPAXG5aezcxXOYFuLbU8yqrGL-LWpzHSfrmEIE8zUpoGhGFUZYUVFSYTx2A/exec";
+            // Par défaut, la section Utilitaires est visible
+            let currentActiveSection = document.querySelector('.content-section.active');
+            
+            // Ajouter un gestionnaire d'événements à chaque bouton
+            navButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const targetId = this.getAttribute('data-target');
+                    
+                    // Mettre à jour les boutons actifs
+                    navButtons.forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Cacher la section actuellement visible
+                    if (currentActiveSection) {
+                        currentActiveSection.classList.remove('active');
+                    }
+                    
+                    // Afficher la nouvelle section
+                    const newActiveSection = document.getElementById(targetId);
+                    newActiveSection.classList.add('active');
+                    currentActiveSection = newActiveSection;
+                    
+                    // Faire défiler vers le haut de la page
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                });
+            });
+            
+            // Garantir qu'une section est toujours visible au chargement
+            if (!document.querySelector('.content-section.active')) {
+                document.getElementById('utiles').classList.add('active');
+                document.querySelector('.nav-button[data-target="utiles"]').classList.add('active');
+                currentActiveSection = document.getElementById('utiles');
+            }
+        });
         const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyCgtLSlxZSPAXG5aezcxXOYFuLbU8yqrGL-LWpzHSfrmEIE8zUpoGhGFUZYUVFSYTx2A/exec";
-        
-        // Variable pour stocker les rappels actifs
-        let activeReminders = [];
-        let lastCheckTime = 0;
 
-        // Fonction pour ouvrir la modal d'ajout
-        function openAddModal() {
-            document.getElementById('modal').style.display = 'block';
-            document.getElementById('overlay').style.display = 'block';
+        // --- FONCTION MANQUANTE AJOUTÉE ICI ---
+        function toggleModal(show) {
+            document.getElementById('modal').style.display = show ? 'block' : 'none';
+            document.getElementById('overlay').style.display = show ? 'block' : 'none';
         }
 
-        // Fonction pour fermer toutes les modales
-        function closeAll() {
-            document.getElementById('modal').style.display = 'none';
-            document.getElementById('alertModal').style.display = 'none';
-            document.getElementById('overlay').style.display = 'none';
-        }
-
-        // Fonction pour sauvegarder un rappel
         async function saveRappel() {
-            const titreEl = document.getElementById('titre');
-            const detailsEl = document.getElementById('details');
-            const debutEl = document.getElementById('debut');
-            const finEl = document.getElementById('fin');
-            const emailEl = document.getElementById('email');
-            const messageEl = document.getElementById('message');
+    // Récupération des éléments
+    const titreEl = document.getElementById('titre');
+    const detailsEl = document.getElementById('details');
+    const debutEl = document.getElementById('debut');
+    const finEl = document.getElementById('fin');
+    const emailEl = document.getElementById('email');
+    const messageEl = document.getElementById('message');
 
-            // Validation des champs requis
-            if (!titreEl.value.trim()) {
-                alert("Veuillez saisir un titre");
-                return;
-            }
-            if (!debutEl.value || !finEl.value) {
-                alert("Veuillez saisir les dates de début et fin");
-                return;
-            }
+    // Construction de l'URL propre
+    const params = new URLSearchParams({
+        titre: titreEl.value,
+        details: detailsEl.value,
+        debut: debutEl.value,
+        fin: finEl.value,
+        email: emailEl ? emailEl.value : "",
+        message: messageEl ? messageEl.value : "",
+        t: Date.now()
+    });
 
-            // Construction de l'URL
-            const params = new URLSearchParams({
-                titre: titreEl.value,
-                details: detailsEl.value,
-                debut: debutEl.value,
-                fin: finEl.value,
-                email: emailEl ? emailEl.value : "",
-                message: messageEl ? messageEl.value : "",
-                t: Date.now()
+    const url = `${WEB_APP_URL}?${params.toString()}`;
+
+    try {
+        // On utilise 'no-cors' pour éviter les blocages, mais cela déclenche souvent le catch
+        // même si l'enregistrement réussit. 
+        await fetch(url, { method: 'GET', mode: 'no-cors' });
+        
+        alert("✅ Rappel, Email et Message enregistrés !");
+        
+        // Reset du formulaire
+        [titreEl, detailsEl, debutEl, finEl, emailEl, messageEl].forEach(el => {
+            if(el) el.value = "";
+        });
+        closeAll();
+        
+    } catch (e) {
+        // Si les données sont quand même dans la feuille, ignorez cette erreur
+        console.log("Note: Fetch a renvoyé une erreur de réponse, mais vérifiez la feuille Excel.");
+        alert("Enregistrement effectué (Vérifiez votre feuille Google Sheet).");
+        closeAll();
+    }
+}
+
+       // Fonction pour fermer le popup d'alerte
+function closeAlertModal() {
+    document.getElementById('alertModal').style.display = 'none';
+    document.getElementById('overlay').style.display = 'none';
+}
+
+// Nouvelle fonction pour changer le statut dans Google Sheets
+async function marquerAccompli(titre, details) {
+    const url = `${WEB_APP_URL}?action=terminer&titre=${encodeURIComponent(titre)}&details=${encodeURIComponent(details)}&t=${Date.now()}`;
+    
+    try {
+        await fetch(url, { method: 'GET', mode: 'no-cors' });
+        alert(`Le rappel "${titre}" a été marqué comme fait.`);
+        // On rafraîchit immédiatement la liste pour faire disparaître le rappel du popup
+        checkReminders(); 
+    } catch (e) {
+        console.error("Erreur lors de la mise à jour", e);
+    }
+}
+
+async function checkReminders() {
+    const maintenant = new Date();
+    const heure = maintenant.getHours();
+
+    if (heure >= 8 && heure < 16) {
+        try {
+            const response = await fetch(WEB_APP_URL + "?t=" + Date.now());
+            const rappels = await response.json();
+            
+            const actifs = rappels.filter(r => {
+                const d = new Date(r[2]);
+                const f = new Date(r[3]);
+                return (maintenant >= d && maintenant <= f && r[4].toLowerCase() === "non");
             });
 
-            const url = `${WEB_APP_URL}?${params.toString()}`;
-
-            try {
-                await fetch(url, { method: 'GET', mode: 'no-cors' });
-                alert("✅ Rappel, Email et Message enregistrés !");
-                
-                // Reset du formulaire
-                [titreEl, detailsEl, debutEl, finEl, emailEl, messageEl].forEach(el => {
-                    if(el) el.value = "";
-                });
-                closeAll();
-                
-                // Mettre à jour la liste des rappels
-                await checkReminders(true);
-                
-            } catch (e) {
-                console.log("Note: Fetch a renvoyé une erreur");
-                alert("Enregistrement effectué. Vérifiez votre feuille Google Sheet.");
-                closeAll();
-            }
-        }
-
-        // Fonction pour marquer un rappel comme accompli
-        async function marquerAccompli(titre, details) {
-            const url = `${WEB_APP_URL}?action=terminer&titre=${encodeURIComponent(titre)}&details=${encodeURIComponent(details)}&t=${Date.now()}`;
-            
-            try {
-                await fetch(url, { method: 'GET', mode: 'no-cors' });
-                alert(`Le rappel "${titre}" a été marqué comme fait.`);
-                
-                // Mettre à jour la liste des rappels
-                await checkReminders(true);
-                
-                // Si on est dans la modal d'alertes, mettre à jour l'affichage
-                if (document.getElementById('alertModal').style.display === 'block') {
-                    await showActiveReminders();
-                }
-                
-            } catch (e) {
-                console.error("Erreur lors de la mise à jour", e);
-            }
-        }
-
-        // Fonction pour vérifier les rappels actifs
-        async function checkReminders(forceShowModal = false) {
-            const maintenant = new Date();
-            const currentTime = Date.now();
-            
-            try {
-                const response = await fetch(WEB_APP_URL + "?t=" + currentTime);
-                const rappels = await response.json();
-                
-                // Filtrer les rappels actifs
-                activeReminders = rappels.filter(r => {
-                    if (!r[2] || !r[3]) return false;
-                    
-                    try {
-                        const d = new Date(r[2]);
-                        const f = new Date(r[3]);
-                        
-                        // Vérifier si les dates sont valides
-                        if (isNaN(d.getTime()) || isNaN(f.getTime())) {
-                            return false;
-                        }
-                        
-                        return (maintenant >= d && maintenant <= f && 
-                                r[4] && r[4].toString().toLowerCase() === "non");
-                    } catch (e) {
-                        console.error("Erreur de date:", e);
-                        return false;
-                    }
-                });
-
-                // Mettre à jour le badge de notification
-                updateNotificationBadge();
-                
-                // Afficher la modal si:
-                // 1. Il y a des rappels actifs ET
-                // 2. (forceShowModal = true) OU (c'est un check automatique toutes les 10 minutes)
-                if (activeReminders.length > 0) {
-                    // Vérifier si la modal n'est pas déjà affichée
-                    const isModalAlreadyShown = document.getElementById('alertModal').style.display === 'block';
-                    
-                    if (!isModalAlreadyShown) {
-                        // Vérifier si c'est le moment d'afficher (toutes les 10 minutes)
-                        const timeSinceLastCheck = currentTime - lastCheckTime;
-                        const tenMinutes = 10 * 60 * 1000;
-                        
-                        // Afficher si:
-                        // - forceShowModal est vrai OU
-                        // - C'est le premier check OU
-                        // - Ça fait plus de 10 minutes depuis le dernier affichage
-                        if (forceShowModal || lastCheckTime === 0 || timeSinceLastCheck >= tenMinutes) {
-                            await showActiveReminders();
-                            lastCheckTime = currentTime;
-                        }
-                    }
-                }
-                
-            } catch (e) {
-                console.error("Erreur de synchronisation:", e);
-            }
-        }
-
-        // Fonction pour afficher la modal des rappels actifs
-        async function showActiveReminders() {
-            // Vérifier à nouveau les rappels avant d'afficher
-            await checkReminders(true);
-            
-            if (activeReminders.length > 0) {
+            if (actifs.length > 0) {
                 let html = "";
-                activeReminders.forEach(r => {
+                actifs.forEach(r => {
+                    // Ajout d'un bouton "Accompli" pour chaque rappel
                     html += `
-                        <div class="rappel-item">
+                        <div class="rappel-item" style="display: flex; justify-content: space-between; align-items: center;">
                             <div style="flex: 1;">
-                                <strong>${r[0] || ''}</strong><br>
-                                <small>${r[1] || ""}</small><br>
-                                <small style="color: #666;">
-                                    ${formatDate(r[2])} - ${formatDate(r[3])}
-                                </small>
+                                <strong>${r[0]}</strong>
+                                <span>${r[1] || ""}</span>
                             </div>
-                            <button onclick="marquerAccompli('${(r[0] || '').replace(/'/g, "\\'")}', 
-                                    '${(r[1] || '').replace(/'/g, "\\'")}')" 
+                            <button onclick="marquerAccompli('${r[0].replace(/'/g, "\\'")}', '${r[1].replace(/'/g, "\\'")}')" 
                                     style="background: #28a745; padding: 5px 10px; font-size: 0.8em; margin-left: 10px;">
                                 Accomplir
                             </button>
@@ -303,121 +1339,34 @@
                 document.getElementById('alertContent').innerHTML = html;
                 document.getElementById('alertModal').style.display = 'block';
                 document.getElementById('overlay').style.display = 'block';
-                
-                // Masquer le badge de notification (car la modal est visible)
-                document.getElementById('notificationBadge').style.display = 'none';
-                
-                // Mettre à jour le temps du dernier affichage
-                lastCheckTime = Date.now();
-                
             } else {
-                // Si aucun rappel actif, fermer la modal si elle est ouverte
+                // Si plus de rappels actifs (après avoir cliqué sur accompli), on ferme le modal
                 closeAll();
-                alert("Aucun rappel actif pour le moment.");
             }
+        } catch (e) {
+            console.error("Erreur de synchronisation.");
         }
+    }
+}
+        // Vérification immédiate au chargement
+        checkReminders(); 
+        // Vérification toutes les 5 minutes
+        setInterval(checkReminders, 10 * 60 * 1000);
 
-        // Fonction pour formater la date
-        function formatDate(dateString) {
-            try {
-                const date = new Date(dateString);
-                return date.toLocaleString('fr-FR', {
-                    day: '2-digit',
-                    month: '2-digit',
-                    year: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit'
-                });
-            } catch (e) {
-                return dateString;
-            }
-        }
-
-        // Fonction pour mettre à jour le badge de notification
-        function updateNotificationBadge() {
-            const badge = document.getElementById('notificationBadge');
-            const countSpan = document.getElementById('reminderCount');
-            
-            // Vérifier si la modal des alertes est déjà ouverte
-            const isAlertModalOpen = document.getElementById('alertModal').style.display === 'block';
-            
-            if (activeReminders.length > 0 && !isAlertModalOpen) {
-                countSpan.textContent = activeReminders.length;
-                badge.style.display = 'block';
-                
-                // Ajouter une animation pour attirer l'attention
-                badge.style.animation = 'pulse 1s';
-                setTimeout(() => {
-                    badge.style.animation = '';
-                }, 1000);
-            } else {
-                badge.style.display = 'none';
-            }
-        }
-
-        // Fonction pour vérifier l'heure actuelle (si vous voulez limiter à certaines heures)
-        function isWithinReminderHours() {
-            const maintenant = new Date();
-            const heure = maintenant.getHours();
-            const minutes = maintenant.getMinutes();
-            
-            // Exemple: Autoriser seulement entre 8h et 20h
-            // Vous pouvez ajuster ou supprimer cette limite
-            return heure >= 8 && heure < 20;
-        }
-
-        // Vérification au chargement et toutes les 10 minutes
-        document.addEventListener('DOMContentLoaded', function() {
-            // Vérifier les rappels immédiatement au chargement
-            checkReminders(true);
-            
-            // Vérifier toutes les 10 minutes (ET AFFICHER LA MODAL si besoin)
-            setInterval(() => {
-                if (isWithinReminderHours()) {
-                    checkReminders(true);
-                }
-            }, 10 * 60 * 1000);
-            
-            // Vérifier aussi toutes les minutes pour détecter rapidement les nouveaux rappels
-            setInterval(() => {
-                if (isWithinReminderHours()) {
-                    checkReminders(false); // false = ne pas forcer l'affichage
-                }
-            }, 60 * 1000);
-            
-            // Vérifier quand la fenêtre redevient visible
-            document.addEventListener('visibilitychange', function() {
-                if (!document.hidden) {
-                    checkReminders(false);
-                }
-            });
-        });
-
-        // Style pour l'animation du badge
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes pulse {
-                0% { transform: scale(1); }
-                50% { transform: scale(1.1); }
-                100% { transform: scale(1); }
-            }
-            
-            @keyframes slideIn {
-                from { 
-                    opacity: 0;
-                    transform: translate(-50%, -60%);
-                }
-                to { 
-                    opacity: 1;
-                    transform: translate(-50%, -50%);
-                }
-            }
-            
-            #alertModal {
-                animation: slideIn 0.3s ease-out;
-            }
-        `;
-        document.head.appendChild(style);
     </script>
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
