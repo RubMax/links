@@ -1768,9 +1768,41 @@
             
             container.innerHTML = html;
         }
+        // Initialisation au chargement de la page
+        document.addEventListener('DOMContentLoaded', function() {
+            localStorage.setItem('firstLoad', 'true');
+            
+            // Charger tous les rappels
+            loadAllReminders();
+            
+            // Vérifier les rappels actifs
+            checkReminders();
+            
+            // Actualiser les rappels toutes les minutes
+            setInterval(() => {
+                checkReminders(true);
+            }, 60 * 1000);
+            
+            // Actualiser tous les rappels toutes les 5 minutes
+            setInterval(() => {
+                loadAllReminders();
+            }, 5 * 60 * 1000);
+        });
+
+        // Style pour l'animation du badge
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes pulse {
+                0% { transform: scale(1); }
+                50% { transform: scale(1.1); }
+                100% { transform: scale(1); }
+            }
+        `;
+        document.head.appendChild(style);
     </script>
 </body>
 </html>
+
 
 
 
