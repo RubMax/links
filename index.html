@@ -635,6 +635,12 @@
     <button onclick="showActiveReminders()" style="background: #d93025; margin-left: 10px;">
         Voir les rappels actifs
     </button>
+             <!-- Badge de notification -->
+    <div id="notificationBadge" onclick="showActiveReminders()">
+        <span id="reminderCount">0</span> rappel(s) actif(s)
+    </div>
+
+    <div id="overlay" class="overlay" onclick="closeAll()"></div>
             <button class="nav-button" data-target="federal">
                 <i class="fas fa-landmark"></i> Services Fédéraux
             </button>
@@ -1568,6 +1574,7 @@
     </script>
 </body>
 </html>
+
 
 
 
