@@ -562,9 +562,10 @@
             <button class="nav-button active" data-target="utiles">
                 <i class="fas fa-tools"></i> Utilitaires
             </button>
-            <button class="nav-button" onclick="toggleModal(true)">
-                <i class="fas fa-tools"></i> + Ajouter un Rappel
-            </button><div id="overlay" class="overlay" onclick="toggleModal(false)"></div>
+            <button onclick="openAddModal()">+ Ajouter un Rappel</button>
+    <button onclick="showActiveReminders()" style="background: #d93025; margin-left: 10px;">
+        Voir les rappels actifs
+    </button>
             <button class="nav-button" data-target="federal">
                 <i class="fas fa-landmark"></i> Services Fédéraux
             </button>
@@ -685,6 +686,18 @@
                 </div>
             </section>
             
+
+             <!-- Rapelles section -->
+            <section id="rappelles" class="content-section">
+                <div class="section-header">
+                    <i class="fas fa-hospital"></i>
+                    <h2>Rappelles</h2>
+                </div>
+                <div class="section-content">
+                    <h2>Liste des Rappels</h2>
+                    <div id="rappelsList"></div>
+                </div>
+            </section>
             <!-- Les autres sections restent inchangées -->
             <!-- Section Services Fédéraux -->
             <section id="federal" class="content-section">
@@ -1171,7 +1184,15 @@
         </div>
     </div>
     
-<div id="modal">
+<!-- Badge de notification -->
+    <div id="notificationBadge" onclick="showActiveReminders()">
+        <span id="reminderCount">0</span> rappel(s) actif(s)
+    </div>
+
+    <div id="overlay" class="overlay" onclick="closeAll()"></div>
+    
+    <!-- Modal pour ajouter un rappel -->
+    <div id="modal">
         <h3>Nouveau Rappel</h3>
         <input type="text" id="titre" placeholder="Titre">
         <textarea id="details" placeholder="Détails (facultatif)"></textarea>
@@ -1180,17 +1201,18 @@
         <label>Fin :</label>
         <input type="datetime-local" id="fin">
         <input type="email" id="email" placeholder="E-mail (facultatif)">
-          <textarea id="message" placeholder="Message à envoyer par e-mail (facultatif)" rows="2"></textarea>
+        <textarea id="message" placeholder="Message à envoyer par e-mail (facultatif)" rows="2"></textarea>
 
         <button onclick="saveRappel()" style="width: 100%; margin-bottom: 10px;">Enregistrer</button>
-        <button onclick="toggleModal(false)" style="width: 100%; background: #666;">Fermer</button>
+        <button onclick="closeAll()" style="width: 100%; background: #666;">Fermer</button>
     </div>
 
-    <div id="alertModal" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); border: none; box-shadow: 0 10px 30px rgba(0,0,0,0.5); padding: 25px; background: white; z-index: 20; border-radius: 12px; width: 400px; max-height: 80vh; overflow-y: auto;">
-    <h2 style="color: #d93025; margin-top: 0;">🔔 Rappels Actifs</h2>
-    <div id="alertContent"></div>
-    <button onclick="closeAlertModal()" style="width: 100%; background: #333; margin-top: 15px;">Fermer</button>
-</div>
+    <!-- Modal pour les alertes -->
+    <div id="alertModal">
+        <h2 style="color: #d93025; margin-top: 0;">🔔 Rappels Actifs</h2>
+        <div id="alertContent"></div>
+        <button onclick="closeAll()" style="width: 100%; background: #333; margin-top: 15px;">Fermer</button>
+    </div>
 
     <!-- Footer -->
     
@@ -1234,103 +1256,165 @@
                 currentActiveSection = document.getElementById('utiles');
             }
         });
-        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyCgtLSlxZSPAXG5aezcxXOYFuLbU8yqrGL-LWpzHSfrmEIE8zUpoGhGFUZYUVFSYTx2A/exec";
+         const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyCgtLSlxZSPAXG5aezcxXOYFuLbU8yqrGL-LWpzHSfrmEIE8zUpoGhGFUZYUVFSYTx2A/exec";
+        
+        // Variable pour stocker les rappels actifs
+        let activeReminders = [];
 
-        // --- FONCTION MANQUANTE AJOUTÉE ICI ---
-        function toggleModal(show) {
-            document.getElementById('modal').style.display = show ? 'block' : 'none';
-            document.getElementById('overlay').style.display = show ? 'block' : 'none';
+        // Fonction pour ouvrir la modal d'ajout
+        function openAddModal() {
+            document.getElementById('modal').style.display = 'block';
+            document.getElementById('overlay').style.display = 'block';
         }
 
+        // Fonction pour fermer toutes les modales
+        function closeAll() {
+            document.getElementById('modal').style.display = 'none';
+            document.getElementById('alertModal').style.display = 'none';
+            document.getElementById('overlay').style.display = 'none';
+        }
+
+        // Fonction pour sauvegarder un rappel
         async function saveRappel() {
-    // Récupération des éléments
-    const titreEl = document.getElementById('titre');
-    const detailsEl = document.getElementById('details');
-    const debutEl = document.getElementById('debut');
-    const finEl = document.getElementById('fin');
-    const emailEl = document.getElementById('email');
-    const messageEl = document.getElementById('message');
+            const titreEl = document.getElementById('titre');
+            const detailsEl = document.getElementById('details');
+            const debutEl = document.getElementById('debut');
+            const finEl = document.getElementById('fin');
+            const emailEl = document.getElementById('email');
+            const messageEl = document.getElementById('message');
 
-    // Construction de l'URL propre
-    const params = new URLSearchParams({
-        titre: titreEl.value,
-        details: detailsEl.value,
-        debut: debutEl.value,
-        fin: finEl.value,
-        email: emailEl ? emailEl.value : "",
-        message: messageEl ? messageEl.value : "",
-        t: Date.now()
-    });
+            // Validation des champs requis
+            if (!titreEl.value.trim()) {
+                alert("Veuillez saisir un titre");
+                return;
+            }
+            if (!debutEl.value || !finEl.value) {
+                alert("Veuillez saisir les dates de début et fin");
+                return;
+            }
 
-    const url = `${WEB_APP_URL}?${params.toString()}`;
-
-    try {
-        // On utilise 'no-cors' pour éviter les blocages, mais cela déclenche souvent le catch
-        // même si l'enregistrement réussit. 
-        await fetch(url, { method: 'GET', mode: 'no-cors' });
-        
-        alert("✅ Rappel, Email et Message enregistrés !");
-        
-        // Reset du formulaire
-        [titreEl, detailsEl, debutEl, finEl, emailEl, messageEl].forEach(el => {
-            if(el) el.value = "";
-        });
-        closeAll();
-        
-    } catch (e) {
-        // Si les données sont quand même dans la feuille, ignorez cette erreur
-        console.log("Note: Fetch a renvoyé une erreur de réponse, mais vérifiez la feuille Excel.");
-        alert("Enregistrement effectué (Vérifiez votre feuille Google Sheet).");
-        closeAll();
-    }
-}
-
-       // Fonction pour fermer le popup d'alerte
-function closeAlertModal() {
-    document.getElementById('alertModal').style.display = 'none';
-    document.getElementById('overlay').style.display = 'none';
-}
-
-// Nouvelle fonction pour changer le statut dans Google Sheets
-async function marquerAccompli(titre, details) {
-    const url = `${WEB_APP_URL}?action=terminer&titre=${encodeURIComponent(titre)}&details=${encodeURIComponent(details)}&t=${Date.now()}`;
-    
-    try {
-        await fetch(url, { method: 'GET', mode: 'no-cors' });
-        alert(`Le rappel "${titre}" a été marqué comme fait.`);
-        // On rafraîchit immédiatement la liste pour faire disparaître le rappel du popup
-        checkReminders(); 
-    } catch (e) {
-        console.error("Erreur lors de la mise à jour", e);
-    }
-}
-
-async function checkReminders() {
-    const maintenant = new Date();
-    const heure = maintenant.getHours();
-
-    if (heure >= 8 && heure < 16) {
-        try {
-            const response = await fetch(WEB_APP_URL + "?t=" + Date.now());
-            const rappels = await response.json();
-            
-            const actifs = rappels.filter(r => {
-                const d = new Date(r[2]);
-                const f = new Date(r[3]);
-                return (maintenant >= d && maintenant <= f && r[4].toLowerCase() === "non");
+            // Construction de l'URL
+            const params = new URLSearchParams({
+                titre: titreEl.value,
+                details: detailsEl.value,
+                debut: debutEl.value,
+                fin: finEl.value,
+                email: emailEl ? emailEl.value : "",
+                message: messageEl ? messageEl.value : "",
+                t: Date.now()
             });
 
-            if (actifs.length > 0) {
+            const url = `${WEB_APP_URL}?${params.toString()}`;
+
+            try {
+                await fetch(url, { method: 'GET', mode: 'no-cors' });
+                alert("✅ Rappel, Email et Message enregistrés !");
+                
+                // Reset du formulaire
+                [titreEl, detailsEl, debutEl, finEl, emailEl, messageEl].forEach(el => {
+                    if(el) el.value = "";
+                });
+                closeAll();
+                
+                // Mettre à jour la liste des rappels
+                await checkReminders(true); // true = ne pas afficher la modal
+                
+            } catch (e) {
+                console.log("Note: Fetch a renvoyé une erreur");
+                alert("Enregistrement effectué. Vérifiez votre feuille Google Sheet.");
+                closeAll();
+            }
+        }
+
+        // Fonction pour marquer un rappel comme accompli
+        async function marquerAccompli(titre, details) {
+            const url = `${WEB_APP_URL}?action=terminer&titre=${encodeURIComponent(titre)}&details=${encodeURIComponent(details)}&t=${Date.now()}`;
+            
+            try {
+                await fetch(url, { method: 'GET', mode: 'no-cors' });
+                alert(`Le rappel "${titre}" a été marqué comme fait.`);
+                
+                // Mettre à jour la liste des rappels
+                await checkReminders(true);
+                
+                // Si on est dans la modal d'alertes, mettre à jour l'affichage
+                if (document.getElementById('alertModal').style.display === 'block') {
+                    await showActiveReminders();
+                }
+                
+            } catch (e) {
+                console.error("Erreur lors de la mise à jour", e);
+            }
+        }
+
+        // Fonction pour vérifier les rappels actifs (ne les affiche pas automatiquement)
+        async function checkReminders(silent = false) {
+            const maintenant = new Date();
+            
+            try {
+                const response = await fetch(WEB_APP_URL + "?t=" + Date.now());
+                const rappels = await response.json();
+                
+                // Filtrer les rappels actifs
+                activeReminders = rappels.filter(r => {
+                    if (!r[2] || !r[3]) return false;
+                    
+                    try {
+                        const d = new Date(r[2]);
+                        const f = new Date(r[3]);
+                        
+                        // Vérifier si les dates sont valides
+                        if (isNaN(d.getTime()) || isNaN(f.getTime())) {
+                            return false;
+                        }
+                        
+                        return (maintenant >= d && maintenant <= f && 
+                                r[4] && r[4].toString().toLowerCase() === "non");
+                    } catch (e) {
+                        console.error("Erreur de date:", e);
+                        return false;
+                    }
+                });
+
+                // Mettre à jour le badge de notification
+                updateNotificationBadge();
+                
+                // Afficher la modal seulement au premier chargement (si silent = false)
+                if (!silent && activeReminders.length > 0) {
+                    // Afficher la modal seulement au premier chargement de la page
+                    // (pas à chaque intervalle)
+                    const firstLoad = localStorage.getItem('firstLoad') !== 'false';
+                    if (firstLoad) {
+                        await showActiveReminders();
+                        localStorage.setItem('firstLoad', 'false');
+                    }
+                }
+                
+            } catch (e) {
+                console.error("Erreur de synchronisation:", e);
+            }
+        }
+
+        // Fonction pour afficher la modal des rappels actifs
+        async function showActiveReminders() {
+            if (activeReminders.length === 0) {
+                await checkReminders(true);
+            }
+            
+            if (activeReminders.length > 0) {
                 let html = "";
-                actifs.forEach(r => {
-                    // Ajout d'un bouton "Accompli" pour chaque rappel
+                activeReminders.forEach(r => {
                     html += `
-                        <div class="rappel-item" style="display: flex; justify-content: space-between; align-items: center;">
+                        <div class="rappel-item">
                             <div style="flex: 1;">
-                                <strong>${r[0]}</strong>
-                                <span>${r[1] || ""}</span>
+                                <strong>${r[0] || ''}</strong><br>
+                                <small>${r[1] || ""}</small><br>
+                                <small style="color: #666;">
+                                    ${formatDate(r[2])} - ${formatDate(r[3])}
+                                </small>
                             </div>
-                            <button onclick="marquerAccompli('${r[0].replace(/'/g, "\\'")}', '${r[1].replace(/'/g, "\\'")}')" 
+                            <button onclick="marquerAccompli('${(r[0] || '').replace(/'/g, "\\'")}', 
+                                    '${(r[1] || '').replace(/'/g, "\\'")}')" 
                                     style="background: #28a745; padding: 5px 10px; font-size: 0.8em; margin-left: 10px;">
                                 Accomplir
                             </button>
@@ -1339,19 +1423,78 @@ async function checkReminders() {
                 document.getElementById('alertContent').innerHTML = html;
                 document.getElementById('alertModal').style.display = 'block';
                 document.getElementById('overlay').style.display = 'block';
+                
+                // Masquer le badge de notification
+                document.getElementById('notificationBadge').style.display = 'none';
             } else {
-                // Si plus de rappels actifs (après avoir cliqué sur accompli), on ferme le modal
-                closeAll();
+                alert("Aucun rappel actif pour le moment.");
             }
-        } catch (e) {
-            console.error("Erreur de synchronisation.");
         }
-    }
-}
-        // Vérification immédiate au chargement
-        checkReminders(); 
-        // Vérification toutes les 5 minutes
-        setInterval(checkReminders, 10 * 60 * 1000);
+
+        // Fonction pour formater la date
+        function formatDate(dateString) {
+            try {
+                const date = new Date(dateString);
+                return date.toLocaleString('fr-FR', {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+            } catch (e) {
+                return dateString;
+            }
+        }
+
+        // Fonction pour mettre à jour le badge de notification
+        function updateNotificationBadge() {
+            const badge = document.getElementById('notificationBadge');
+            const countSpan = document.getElementById('reminderCount');
+            
+            if (activeReminders.length > 0) {
+                countSpan.textContent = activeReminders.length;
+                badge.style.display = 'block';
+                
+                // Ajouter une animation pour attirer l'attention
+                badge.style.animation = 'pulse 1s';
+                setTimeout(() => {
+                    badge.style.animation = '';
+                }, 1000);
+            } else {
+                badge.style.display = 'none';
+            }
+        }
+
+        // Vérification au chargement et toutes les 10 minutes
+        document.addEventListener('DOMContentLoaded', function() {
+            // Marquer que c'est le premier chargement
+            localStorage.setItem('firstLoad', 'true');
+            
+            // Vérifier les rappels au chargement (modal s'affiche si besoin)
+            checkReminders();
+            
+            // Vérifier toutes les 10 minutes (sans afficher la modal)
+            setInterval(() => {
+                checkReminders(true); // true = mode silencieux
+            }, 10 * 60 * 1000);
+            
+            // Vérifier aussi toutes les minutes pour les notifications en temps réel
+            setInterval(() => {
+                checkReminders(true);
+            }, 60 * 1000);
+        });
+
+        // Style pour l'animation du badge
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes pulse {
+                0% { transform: scale(1); }
+                50% { transform: scale(1.1); }
+                100% { transform: scale(1); }
+            }
+        `;
+        document.head.appendChild(style);
 
     </script>
 </body>
