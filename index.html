@@ -632,7 +632,9 @@
                 <i class="fas fa-tools"></i> Utilitaires
             </button>
             <!-- rappelles===================== -->
-            <button onclick="openAddModal()" class="nav-button">+ Ajouter un Rappel</button>
+            <button onclick="openAddModal()" class="nav-button" data-target="rappelles">
+                + Ajouter un Rappel
+            </button>
     
      
 <!-- rappelles===================== -->
@@ -759,6 +761,30 @@
             
 
              <!-- Rapelles section -->
+             <!-- =========================================================== -->
+            <section id="rappelles" class="content-section">
+                <div class="section-header">
+                    <i class="fas fa-briefcase"></i>
+                    <h2Rappelles</h2>
+                </div>
+                <div class="section-content">
+                    <!-- Conteneur pour tous les rappels -->
+    <div id="allRemindersContainer">
+        <div class="reminder-header">
+            <h3 style="margin: 0;">Tous mes rappels</h3>
+            <div>
+                <span id="totalRemindersCount">0</span> rappels au total
+            </div>
+        </div>
+        <div id="allRemindersList">
+            <!-- Les rappels seront chargés ici -->
+            <p style="text-align: center; color: #888; padding: 20px;">
+                Chargement des rappels...
+            </p>
+        </div>
+    </div>
+                </div>
+            </section>
          
             <!-- Les autres sections restent inchangées -->
             <!-- Section Services Fédéraux -->
@@ -1563,9 +1589,114 @@
             }
         `;
         document.head.appendChild(style);
+         // Fonction pour charger et afficher tous les rappels
+        async function loadAllReminders() {
+            try {
+                const response = await fetch(WEB_APP_URL + "?t=" + Date.now());
+                allReminders = await response.json();
+                
+                // Trier les rappels par date de début (du plus récent au plus ancien)
+                allReminders.sort((a, b) => {
+                    const dateA = new Date(a[2] || 0);
+                    const dateB = new Date(b[2] || 0);
+                    return dateB - dateA;
+                });
+                
+                // Mettre à jour le compteur
+                document.getElementById('totalRemindersCount').textContent = allReminders.length;
+                
+                // Afficher les rappels
+                displayAllReminders();
+                
+            } catch (e) {
+                console.error("Erreur lors du chargement des rappels:", e);
+                document.getElementById('allRemindersList').innerHTML = `
+                    <p style="color: #d93025; text-align: center; padding: 20px;">
+                        Erreur lors du chargement des rappels. Veuillez réessayer.
+                    </p>
+                `;
+            }
+        }
+
+        // Fonction pour afficher tous les rappels
+        function displayAllReminders() {
+            const container = document.getElementById('allRemindersList');
+            const maintenant = new Date();
+            
+            if (allReminders.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 40px; color: #888;">
+                        <p style="font-size: 1.2em;">Aucun rappel enregistré</p>
+                        <p>Commencez par ajouter votre premier rappel !</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            let html = '';
+            
+            allReminders.forEach((reminder, index) => {
+                const titre = reminder[0] || 'Sans titre';
+                const details = reminder[1] || '';
+                const debut = reminder[2] || '';
+                const fin = reminder[3] || '';
+                const statut = reminder[4] || 'Non';
+                const email = reminder[5] || '';
+                const message = reminder[6] || '';
+                
+                // Déterminer le statut
+                let statusClass = '';
+                let statusText = '';
+                
+                if (statut.toString().toLowerCase() === 'oui') {
+                    statusClass = 'status-completed';
+                    statusText = 'Terminé';
+                } else if (debut && fin) {
+                    const dateDebut = new Date(debut);
+                    const dateFin = new Date(fin);
+                    
+                    if (maintenant < dateDebut) {
+                        statusClass = 'status-upcoming';
+                        statusText = 'À venir';
+                    } else if (maintenant >= dateDebut && maintenant <= dateFin) {
+                        statusClass = 'status-active';
+                        statusText = 'En cours';
+                    } else if (maintenant > dateFin) {
+                        statusClass = 'status-completed';
+                        statusText = 'Expiré';
+                    }
+                }
+                
+                html += `
+                    <div class="reminder-card">
+                        <div class="reminder-title">${titre}</div>
+                        ${details ? `<div class="reminder-details">${details}</div>` : ''}
+                        <div class="reminder-date">
+                            <strong>Début:</strong> ${formatDate(debut)}<br>
+                            <strong>Fin:</strong> ${formatDate(fin)}
+                        </div>
+                        ${email ? `<div class="reminder-details"><strong>Email:</strong> ${email}</div>` : ''}
+                        ${message ? `<div class="reminder-details"><strong>Message:</strong> ${message}</div>` : ''}
+                        <div class="reminder-status ${statusClass}">
+                            ${statusText}
+                        </div>
+                        ${statut.toString().toLowerCase() === 'non' ? `
+                            <button onclick="marquerAccompli('${titre.replace(/'/g, "\\'")}', 
+                                    '${details.replace(/'/g, "\\'")}')" 
+                                    style="background: #28a745; padding: 5px 10px; font-size: 0.8em; margin-top: 10px;">
+                                Marquer comme accompli
+                            </button>
+                        ` : ''}
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
     </script>
 </body>
 </html>
+
 
 
 
