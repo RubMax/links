@@ -88,7 +88,7 @@
             border-radius: 10px;
             padding: 15px;
             margin-bottom: 20px;
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
@@ -141,7 +141,7 @@
             background-color: white;
             border-radius: 10px;
             padding: 0;
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
             overflow: hidden;
             display: none; /* Par défaut toutes cachées */
             animation: fadeIn 0.5s ease;
@@ -198,7 +198,7 @@
         
         .link-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
             border-left-color: var(--accent-color);
         }
         
@@ -245,7 +245,7 @@
             transition: opacity 0.3s;
             font-size: 0.85rem;
             font-weight: normal;
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
         }
         
         .tooltip .tooltiptext::after {
@@ -694,6 +694,136 @@
             padding-bottom: 10px;
             border-bottom: 2px solid #4285f4;
         }
+        
+        .reminder-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .reminder-actions button {
+            padding: 5px 10px;
+            font-size: 0.8em;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .reminder-actions .btn-complete {
+            background: #28a745;
+            color: white;
+        }
+        
+        .reminder-actions .btn-complete:hover {
+            background: #218838;
+        }
+        
+        .reminder-actions .btn-delete {
+            background: #dc3545;
+            color: white;
+        }
+        
+        .reminder-actions .btn-delete:hover {
+            background: #c82333;
+        }
+        
+        .reminder-actions .btn-edit {
+            background: #ffc107;
+            color: #212529;
+        }
+        
+        .reminder-actions .btn-edit:hover {
+            background: #e0a800;
+        }
+        
+        .reminders-stats {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            flex: 1;
+            min-width: 150px;
+            text-align: center;
+            border-top: 4px solid #4285f4;
+        }
+        
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #4285f4;
+            margin: 10px 0;
+        }
+        
+        .stat-label {
+            color: #666;
+            font-size: 0.9em;
+        }
+        
+        .reminder-filters {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .filter-btn {
+            padding: 8px 15px;
+            background: #f8f9fa;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .filter-btn.active {
+            background: #4285f4;
+            color: white;
+            border-color: #4285f4;
+        }
+        
+        .filter-btn:hover {
+            background: #e9ecef;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #666;
+        }
+        
+        .empty-state i {
+            font-size: 3em;
+            color: #ddd;
+            margin-bottom: 20px;
+        }
+        
+        .empty-state h3 {
+            margin-bottom: 10px;
+            color: #333;
+        }
+        
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #4285f4;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body>
@@ -710,7 +840,9 @@
             <button onclick="openAddModal()" class="nav-button" data-target="rappelles">
                 + Ajouter un Rappel
             </button>
-    
+    <button class="nav-button" data-target="rappelles">
+                <i class="fas fa-bell"></i> Mes Rappels
+            </button>
      
 <!-- rappelles===================== -->
     <div id="overlay" class="overlay" onclick="closeAll()"></div>
@@ -835,31 +967,71 @@
             </section>
             
 
-             <!-- Rapelles section -->
              <!-- =========================================================== -->
+            <!-- SECTION RAPPELLES COMPLÈTE -->
+            <!-- =========================================================== -->
             <section id="rappelles" class="content-section">
                 <div class="section-header">
-                    <i class="fas fa-briefcase"></i>
-                    <h2Rappelles</h2>
+                    <i class="fas fa-bell"></i>
+                    <h2>Mes Rappels</h2>
                 </div>
                 <div class="section-content">
+                    <!-- Bouton pour ajouter un nouveau rappel -->
+                    <div style="text-align: center; margin-bottom: 20px;">
+                        <button onclick="openAddModal()" style="background: #4285f4; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-size: 16px;">
+                            <i class="fas fa-plus"></i> Ajouter un nouveau rappel
+                        </button>
+                    </div>
+                    
+                    <!-- Statistiques -->
+                    <div class="reminders-stats">
+                        <div class="stat-card">
+                            <div class="stat-number" id="statTotal">0</div>
+                            <div class="stat-label">Total</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="statActive">0</div>
+                            <div class="stat-label">Actifs</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="statUpcoming">0</div>
+                            <div class="stat-label">À venir</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="statCompleted">0</div>
+                            <div class="stat-label">Terminés</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Filtres -->
+                    <div class="reminder-filters">
+                        <button class="filter-btn active" onclick="filterReminders('all')">Tous</button>
+                        <button class="filter-btn" onclick="filterReminders('active')">Actifs</button>
+                        <button class="filter-btn" onclick="filterReminders('upcoming')">À venir</button>
+                        <button class="filter-btn" onclick="filterReminders('completed')">Terminés</button>
+                        <button class="filter-btn" onclick="filterReminders('expired')">Expirés</button>
+                    </div>
+                    
                     <!-- Conteneur pour tous les rappels -->
-    <div id="allRemindersContainer">
-        <div class="reminder-header">
-            <h3 style="margin: 0;">Tous mes rappels</h3>
-            <div>
-                <span id="totalRemindersCount">0</span> rappels au total
-            </div>
-        </div>
-        <div id="allRemindersList">
-            <!-- Les rappels seront chargés ici -->
-            <p style="text-align: center; color: #888; padding: 20px;">
-                Chargement des rappels...
-            </p>
-        </div>
-    </div>
+                    <div id="allRemindersContainer">
+                        <div class="reminder-header">
+                            <h3 style="margin: 0;">Tous mes rappels</h3>
+                            <div>
+                                <span id="totalRemindersCount">0</span> rappels au total
+                            </div>
+                        </div>
+                        <div id="allRemindersList">
+                            <!-- Les rappels seront chargés ici -->
+                            <div class="empty-state">
+                                <i class="fas fa-clock"></i>
+                                <h3>Chargement des rappels...</h3>
+                                <div class="loading-spinner"></div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </section>
+
          
             <!-- Les autres sections restent inchangées -->
             <!-- Section Services Fédéraux -->
@@ -1356,387 +1528,646 @@
         <span id="reminderCount">0</span> rappel(s) actif(s)
     </div>
     
+   <!-- Modals et badges -->
+    <div id="overlay" class="overlay" onclick="closeAll()"></div>
+    
     <!-- Modal pour ajouter un rappel -->
     <div id="modal">
         <h3>Nouveau Rappel</h3>
-        <input type="text" id="titre" placeholder="Titre">
-        <textarea id="details" placeholder="Détails (facultatif)"></textarea>
+        <input type="text" id="titre" placeholder="Titre *" required>
+        <textarea id="details" placeholder="Détails (facultatif)" rows="3"></textarea>
         <label>Début :</label>
-        <input type="datetime-local" id="debut">
+        <input type="datetime-local" id="debut" required>
         <label>Fin :</label>
-        <input type="datetime-local" id="fin">
+        <input type="datetime-local" id="fin" required>
         <input type="email" id="email" placeholder="E-mail (facultatif)">
         <textarea id="message" placeholder="Message à envoyer par e-mail (facultatif)" rows="2"></textarea>
 
-        <button onclick="saveRappel()" style="width: 100%; margin-bottom: 10px;">Enregistrer</button>
-        <button onclick="closeAll()" style="width: 100%; background: #666;">Fermer</button>
+        <button onclick="saveRappel()" style="width: 100%; margin-bottom: 10px; background: #4285f4; color: white; padding: 10px; border: none; border-radius: 4px; cursor: pointer;">
+            <i class="fas fa-save"></i> Enregistrer
+        </button>
+        <button onclick="closeAll()" style="width: 100%; background: #666; color: white; padding: 10px; border: none; border-radius: 4px; cursor: pointer;">
+            <i class="fas fa-times"></i> Fermer
+        </button>
     </div>
 
     <!-- Modal pour les alertes -->
     <div id="alertModal">
-        <h2 style="color: #d93025; margin-top: 0;">🔔 Rappels Actifs</h2>
+        <h2 style="color: #d93025; margin-top: 0;"><i class="fas fa-bell"></i> Rappels Actifs</h2>
         <div id="alertContent"></div>
-        <button onclick="closeAll()" style="width: 100%; background: #333; margin-top: 15px;">Fermer</button>
+        <button onclick="closeAll()" style="width: 100%; background: #333; color: white; padding: 10px; border: none; border-radius: 4px; cursor: pointer; margin-top: 15px;">
+            <i class="fas fa-times"></i> Fermer
+        </button>
     </div>
 
-
-    <!-- Footer -->
+    <!-- Badge de notification -->
+    <div id="notificationBadge" onclick="showActiveReminders()">
+        <i class="fas fa-bell"></i>
+        <span id="reminderCount">0</span> rappel(s) actif(s)
+    </div>
     
     <script>
     //=========================================================
 //=======================================
 //================================================
-const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyCgtLSlxZSPAXG5aezcxXOYFuLbU8yqrGL-LWpzHSfrmEIE8zUpoGhGFUZYUVFSYTx2A/exec";
-
-// Variables pour stocker les rappels
-let activeReminders = [];
-let allReminders = []; // Ajoutez cette ligne
-
-// Fonction pour ouvrir la modal d'ajout
-function openAddModal() {
-    document.getElementById('modal').style.display = 'block';
-    document.getElementById('overlay').style.display = 'block';
-}
-
-// Fonction pour fermer toutes les modales
-function closeAll() {
-    document.getElementById('modal').style.display = 'none';
-    document.getElementById('alertModal').style.display = 'none';
-    document.getElementById('overlay').style.display = 'none';
-}
-
-// Fonction pour sauvegarder un rappel
-async function saveRappel() {
-    const titreEl = document.getElementById('titre');
-    const detailsEl = document.getElementById('details');
-    const debutEl = document.getElementById('debut');
-    const finEl = document.getElementById('fin');
-    const emailEl = document.getElementById('email');
-    const messageEl = document.getElementById('message');
-
-    // Validation des champs requis
-    if (!titreEl.value.trim()) {
-        alert("Veuillez saisir un titre");
-        return;
-    }
-    if (!debutEl.value || !finEl.value) {
-        alert("Veuillez saisir les dates de début et fin");
-        return;
-    }
-
-    // Construction de l'URL
-    const params = new URLSearchParams({
-        titre: titreEl.value,
-        details: detailsEl.value,
-        debut: debutEl.value,
-        fin: finEl.value,
-        email: emailEl ? emailEl.value : "",
-        message: messageEl ? messageEl.value : "",
-        t: Date.now()
-    });
-
-    const url = `${WEB_APP_URL}?${params.toString()}`;
-
-    try {
-        await fetch(url, { method: 'GET', mode: 'no-cors' });
-        alert("✅ Rappel, Email et Message enregistrés !");
-        
-        // Reset du formulaire
-        [titreEl, detailsEl, debutEl, finEl, emailEl, messageEl].forEach(el => {
-            if(el) el.value = "";
+   // Script pour la navigation par boutons
+        document.addEventListener('DOMContentLoaded', function() {
+            const navButtons = document.querySelectorAll('.nav-button');
+            const contentSections = document.querySelectorAll('.content-section');
+            
+            // Par défaut, la section Utilitaires est visible
+            let currentActiveSection = document.querySelector('.content-section.active');
+            
+            // Ajouter un gestionnaire d'événements à chaque bouton
+            navButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const targetId = this.getAttribute('data-target');
+                    
+                    // Mettre à jour les boutons actifs
+                    navButtons.forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Cacher la section actuellement visible
+                    if (currentActiveSection) {
+                        currentActiveSection.classList.remove('active');
+                    }
+                    
+                    // Afficher la nouvelle section
+                    const newActiveSection = document.getElementById(targetId);
+                    newActiveSection.classList.add('active');
+                    currentActiveSection = newActiveSection;
+                    
+                    // Faire défiler vers le haut de la page
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                    
+                    // Si on ouvre la section rappels, charger les données
+                    if (targetId === 'rappelles') {
+                        loadAllReminders();
+                    }
+                });
+            });
+            
+            // Garantir qu'une section est toujours visible au chargement
+            if (!document.querySelector('.content-section.active')) {
+                document.getElementById('utiles').classList.add('active');
+                document.querySelector('.nav-button[data-target="utiles"]').classList.add('active');
+                currentActiveSection = document.getElementById('utiles');
+            }
         });
-        closeAll();
-        
-        // Mettre à jour la liste des rappels
-        await checkReminders(true); // true = ne pas afficher la modal
-        await loadAllReminders(); // Recharger tous les rappels
-        
-    } catch (e) {
-        console.log("Note: Fetch a renvoyé une erreur");
-        alert("Enregistrement effectué. Vérifiez votre feuille Google Sheet.");
-        closeAll();
-    }
-}
 
-// Fonction pour marquer un rappel comme accompli
-async function marquerAccompli(titre, details) {
-    const url = `${WEB_APP_URL}?action=terminer&titre=${encodeURIComponent(titre)}&details=${encodeURIComponent(details)}&t=${Date.now()}`;
-    
-    try {
-        await fetch(url, { method: 'GET', mode: 'no-cors' });
-        alert(`Le rappel "${titre}" a été marqué comme fait.`);
+        // ==========================================================
+        // GESTION DES RAPPELLES
+        // ==========================================================
+        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyCgtLSlxZSPAXG5aezcxXOYFuLbU8yqrGL-LWpzHSfrmEIE8zUpoGhGFUZYUVFSYTx2A/exec";
         
-        // Mettre à jour la liste des rappels
-        await checkReminders(true);
-        await loadAllReminders(); // Recharger tous les rappels
-        
-        // Si on est dans la modal d'alertes, mettre à jour l'affichage
-        if (document.getElementById('alertModal').style.display === 'block') {
-            await showActiveReminders();
+        // Variables pour stocker les rappels
+        let activeReminders = [];
+        let allReminders = [];
+        let filteredReminders = [];
+        let currentFilter = 'all';
+
+        // Fonction pour ouvrir la modal d'ajout
+        function openAddModal() {
+            document.getElementById('modal').style.display = 'block';
+            document.getElementById('overlay').style.display = 'block';
+            
+            // Pré-remplir la date de début avec maintenant
+            const now = new Date();
+            const nowFormatted = now.toISOString().slice(0, 16);
+            document.getElementById('debut').value = nowFormatted;
+            
+            // Pré-remplir la date de fin avec +1 heure
+            const oneHourLater = new Date(now.getTime() + 60 * 60 * 1000);
+            const oneHourLaterFormatted = oneHourLater.toISOString().slice(0, 16);
+            document.getElementById('fin').value = oneHourLaterFormatted;
         }
-        
-    } catch (e) {
-        console.error("Erreur lors de la mise à jour", e);
-    }
-}
 
-// Fonction pour vérifier les rappels actifs
-async function checkReminders(silent = false) {
-    const maintenant = new Date();
-    
-    try {
-        const response = await fetch(WEB_APP_URL + "?t=" + Date.now());
-        const rappels = await response.json();
-        
-        // Filtrer les rappels actifs
-        activeReminders = rappels.filter(r => {
-            if (!r[2] || !r[3]) return false;
+        // Fonction pour fermer toutes les modales
+        function closeAll() {
+            document.getElementById('modal').style.display = 'none';
+            document.getElementById('alertModal').style.display = 'none';
+            document.getElementById('overlay').style.display = 'none';
+        }
+
+        // Fonction pour sauvegarder un rappel
+        async function saveRappel() {
+            const titreEl = document.getElementById('titre');
+            const detailsEl = document.getElementById('details');
+            const debutEl = document.getElementById('debut');
+            const finEl = document.getElementById('fin');
+            const emailEl = document.getElementById('email');
+            const messageEl = document.getElementById('message');
+
+            // Validation des champs requis
+            if (!titreEl.value.trim()) {
+                alert("Veuillez saisir un titre");
+                return;
+            }
+            if (!debutEl.value || !finEl.value) {
+                alert("Veuillez saisir les dates de début et fin");
+                return;
+            }
+
+            // Construction de l'URL
+            const params = new URLSearchParams({
+                titre: titreEl.value,
+                details: detailsEl.value,
+                debut: debutEl.value,
+                fin: finEl.value,
+                email: emailEl ? emailEl.value : "",
+                message: messageEl ? messageEl.value : "",
+                t: Date.now()
+            });
+
+            const url = `${WEB_APP_URL}?${params.toString()}`;
+
+            try {
+                // Afficher un indicateur de chargement
+                const saveBtn = document.querySelector('#modal button[onclick="saveRappel()"]');
+                const originalText = saveBtn.innerHTML;
+                saveBtn.innerHTML = '<div class="loading-spinner" style="display: inline-block; margin-right: 10px;"></div> Enregistrement...';
+                saveBtn.disabled = true;
+
+                await fetch(url, { method: 'GET', mode: 'no-cors' });
+                
+                // Réinitialiser le bouton
+                saveBtn.innerHTML = originalText;
+                saveBtn.disabled = false;
+                
+                alert("✅ Rappel enregistré avec succès !");
+                
+                // Reset du formulaire
+                [titreEl, detailsEl, debutEl, finEl, emailEl, messageEl].forEach(el => {
+                    if(el) el.value = "";
+                });
+                closeAll();
+                
+                // Mettre à jour la liste des rappels
+                await loadAllReminders();
+                await checkReminders(true);
+                
+            } catch (e) {
+                console.log("Note: Fetch a renvoyé une erreur");
+                alert("Enregistrement effectué. Vérifiez votre feuille Google Sheet.");
+                closeAll();
+                await loadAllReminders();
+            }
+        }
+
+        // Fonction pour marquer un rappel comme accompli
+        async function marquerAccompli(titre, details) {
+            if (!confirm(`Voulez-vous vraiment marquer le rappel "${titre}" comme accompli ?`)) {
+                return;
+            }
+            
+            const url = `${WEB_APP_URL}?action=terminer&titre=${encodeURIComponent(titre)}&details=${encodeURIComponent(details)}&t=${Date.now()}`;
             
             try {
-                const d = new Date(r[2]);
-                const f = new Date(r[3]);
+                await fetch(url, { method: 'GET', mode: 'no-cors' });
                 
-                // Vérifier si les dates sont valides
-                if (isNaN(d.getTime()) || isNaN(f.getTime())) {
-                    return false;
+                // Mettre à jour la liste des rappels
+                await loadAllReminders();
+                await checkReminders(true);
+                
+                // Si on est dans la modal d'alertes, mettre à jour l'affichage
+                if (document.getElementById('alertModal').style.display === 'block') {
+                    await showActiveReminders();
                 }
                 
-                return (maintenant >= d && maintenant <= f && 
-                        r[4] && r[4].toString().toLowerCase() === "non");
             } catch (e) {
-                console.error("Erreur de date:", e);
-                return false;
-            }
-        });
-
-        // Mettre à jour le badge de notification
-        updateNotificationBadge();
-        
-        // Afficher la modal seulement au premier chargement (si silent = false)
-        if (!silent && activeReminders.length > 0) {
-            // Afficher la modal seulement au premier chargement de la page
-            // (pas à chaque intervalle)
-            const firstLoad = localStorage.getItem('firstLoad') !== 'false';
-            if (firstLoad) {
-                await showActiveReminders();
-                localStorage.setItem('firstLoad', 'false');
+                console.error("Erreur lors de la mise à jour", e);
+                alert("Erreur lors de la mise à jour du rappel.");
             }
         }
-        
-    } catch (e) {
-        console.error("Erreur de synchronisation:", e);
-    }
-}
 
-// Fonction pour charger et afficher tous les rappels
-async function loadAllReminders() {
-    try {
-        const response = await fetch(WEB_APP_URL + "?t=" + Date.now());
-        allReminders = await response.json();
-        
-        // Trier les rappels par date de début (du plus récent au plus ancien)
-        allReminders.sort((a, b) => {
-            const dateA = new Date(a[2] || 0);
-            const dateB = new Date(b[2] || 0);
-            return dateB - dateA;
-        });
-        
-        // Mettre à jour le compteur
-        document.getElementById('totalRemindersCount').textContent = allReminders.length;
-        
-        // Afficher les rappels
-        displayAllReminders();
-        
-    } catch (e) {
-        console.error("Erreur lors du chargement des rappels:", e);
-        document.getElementById('allRemindersList').innerHTML = `
-            <p style="color: #d93025; text-align: center; padding: 20px;">
-                Erreur lors du chargement des rappels. Veuillez réessayer.
-            </p>
-        `;
-    }
-}
-
-// Fonction pour afficher tous les rappels
-function displayAllReminders() {
-    const container = document.getElementById('allRemindersList');
-    const maintenant = new Date();
-    
-    if (allReminders.length === 0) {
-        container.innerHTML = `
-            <div style="text-align: center; padding: 40px; color: #888;">
-                <p style="font-size: 1.2em;">Aucun rappel enregistré</p>
-                <p>Commencez par ajouter votre premier rappel !</p>
-            </div>
-        `;
-        return;
-    }
-    
-    let html = '';
-    
-    allReminders.forEach((reminder, index) => {
-        const titre = reminder[0] || 'Sans titre';
-        const details = reminder[1] || '';
-        const debut = reminder[2] || '';
-        const fin = reminder[3] || '';
-        const statut = reminder[4] || 'Non';
-        const email = reminder[5] || '';
-        const message = reminder[6] || '';
-        
-        // Déterminer le statut
-        let statusClass = '';
-        let statusText = '';
-        
-        if (statut.toString().toLowerCase() === 'oui') {
-            statusClass = 'status-completed';
-            statusText = 'Terminé';
-        } else if (debut && fin) {
-            const dateDebut = new Date(debut);
-            const dateFin = new Date(fin);
-            
-            if (maintenant < dateDebut) {
-                statusClass = 'status-upcoming';
-                statusText = 'À venir';
-            } else if (maintenant >= dateDebut && maintenant <= dateFin) {
-                statusClass = 'status-active';
-                statusText = 'En cours';
-            } else if (maintenant > dateFin) {
-                statusClass = 'status-completed';
-                statusText = 'Expiré';
-            }
-        }
-        
-        html += `
-            <div class="reminder-card">
-                <div class="reminder-title">${titre}</div>
-                ${details ? `<div class="reminder-details">${details}</div>` : ''}
-                <div class="reminder-date">
-                    <strong>Début:</strong> ${formatDate(debut)}<br>
-                    <strong>Fin:</strong> ${formatDate(fin)}
-                </div>
-                ${email ? `<div class="reminder-details"><strong>Email:</strong> ${email}</div>` : ''}
-                ${message ? `<div class="reminder-details"><strong>Message:</strong> ${message}</div>` : ''}
-                <div class="reminder-status ${statusClass}">
-                    ${statusText}
-                </div>
-                ${statut.toString().toLowerCase() === 'non' ? `
-                    <button onclick="marquerAccompli('${titre.replace(/'/g, "\\'")}', 
-                            '${details.replace(/'/g, "\\'")}')" 
-                            style="background: #28a745; padding: 5px 10px; font-size: 0.8em; margin-top: 10px;">
-                        Marquer comme accompli
-                    </button>
-                ` : ''}
-            </div>
-        `;
-    });
-    
-    container.innerHTML = html;
-}
-
-// Fonction pour afficher la modal des rappels actifs
-async function showActiveReminders() {
-    if (activeReminders.length === 0) {
-        await checkReminders(true);
-    }
-    
-    if (activeReminders.length > 0) {
-        let html = "";
-        activeReminders.forEach(r => {
-            html += `
-                <div class="rappel-item">
-                    <div style="flex: 1;">
-                        <strong>${r[0] || ''}</strong><br>
-                        <small>${r[1] || ""}</small><br>
-                        <small style="color: #666;">
-                            ${formatDate(r[2])} - ${formatDate(r[3])}
-                        </small>
+        // Fonction pour charger et afficher tous les rappels
+        async function loadAllReminders() {
+            try {
+                // Afficher un indicateur de chargement
+                document.getElementById('allRemindersList').innerHTML = `
+                    <div class="empty-state">
+                        <div class="loading-spinner" style="width: 40px; height: 40px; margin: 0 auto 20px;"></div>
+                        <h3>Chargement des rappels...</h3>
                     </div>
-                    <button onclick="marquerAccompli('${(r[0] || '').replace(/'/g, "\\'")}', 
-                            '${(r[1] || '').replace(/'/g, "\\'")}')" 
-                            style="background: #28a745; padding: 5px 10px; font-size: 0.8em; margin-left: 10px;">
-                        Accomplir
-                    </button>
-                </div>`;
+                `;
+                
+                const response = await fetch(WEB_APP_URL + "?t=" + Date.now());
+                allReminders = await response.json();
+                
+                // Trier les rappels par date de début (du plus récent au plus ancien)
+                allReminders.sort((a, b) => {
+                    const dateA = new Date(a[2] || 0);
+                    const dateB = new Date(b[2] || 0);
+                    return dateB - dateA;
+                });
+                
+                // Mettre à jour les statistiques
+                updateStatistics();
+                
+                // Appliquer le filtre actuel
+                filterReminders(currentFilter);
+                
+            } catch (e) {
+                console.error("Erreur lors du chargement des rappels:", e);
+                document.getElementById('allRemindersList').innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-exclamation-triangle" style="color: #dc3545;"></i>
+                        <h3>Erreur de chargement</h3>
+                        <p>Impossible de charger les rappels. Vérifiez votre connexion internet.</p>
+                        <button onclick="loadAllReminders()" style="background: #4285f4; color: white; padding: 8px 15px; border: none; border-radius: 4px; cursor: pointer; margin-top: 10px;">
+                            <i class="fas fa-redo"></i> Réessayer
+                        </button>
+                    </div>
+                `;
+            }
+        }
+
+        // Fonction pour mettre à jour les statistiques
+        function updateStatistics() {
+            const maintenant = new Date();
+            let total = allReminders.length;
+            let active = 0;
+            let upcoming = 0;
+            let completed = 0;
+            
+            allReminders.forEach(reminder => {
+                const statut = reminder[4] || 'Non';
+                const debut = reminder[2] || '';
+                const fin = reminder[3] || '';
+                
+                if (statut.toString().toLowerCase() === 'oui') {
+                    completed++;
+                } else if (debut && fin) {
+                    const dateDebut = new Date(debut);
+                    const dateFin = new Date(fin);
+                    
+                    if (maintenant < dateDebut) {
+                        upcoming++;
+                    } else if (maintenant >= dateDebut && maintenant <= dateFin) {
+                        active++;
+                    } else if (maintenant > dateFin) {
+                        // Expiré mais non marqué comme terminé
+                        // On pourrait ajouter une catégorie "expired" si besoin
+                    }
+                }
+            });
+            
+            // Mettre à jour les statistiques
+            document.getElementById('statTotal').textContent = total;
+            document.getElementById('statActive').textContent = active;
+            document.getElementById('statUpcoming').textContent = upcoming;
+            document.getElementById('statCompleted').textContent = completed;
+            document.getElementById('totalRemindersCount').textContent = total;
+        }
+
+        // Fonction pour filtrer les rappels
+        function filterReminders(filterType) {
+            currentFilter = filterType;
+            const maintenant = new Date();
+            
+            // Mettre à jour les boutons de filtre
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Filtrer les rappels
+            filteredReminders = allReminders.filter(reminder => {
+                const titre = reminder[0] || '';
+                const details = reminder[1] || '';
+                const debut = reminder[2] || '';
+                const fin = reminder[3] || '';
+                const statut = reminder[4] || 'Non';
+                const email = reminder[5] || '';
+                const message = reminder[6] || '';
+                
+                if (filterType === 'all') return true;
+                if (filterType === 'completed') return statut.toString().toLowerCase() === 'oui';
+                
+                if (debut && fin) {
+                    const dateDebut = new Date(debut);
+                    const dateFin = new Date(fin);
+                    
+                    if (filterType === 'active') {
+                        return statut.toString().toLowerCase() === 'non' && 
+                               maintenant >= dateDebut && maintenant <= dateFin;
+                    }
+                    if (filterType === 'upcoming') {
+                        return statut.toString().toLowerCase() === 'non' && maintenant < dateDebut;
+                    }
+                    if (filterType === 'expired') {
+                        return statut.toString().toLowerCase() === 'non' && maintenant > dateFin;
+                    }
+                }
+                return false;
+            });
+            
+            // Afficher les rappels filtrés
+            displayAllReminders();
+        }
+
+        // Fonction pour afficher tous les rappels
+        function displayAllReminders() {
+            const container = document.getElementById('allRemindersList');
+            const maintenant = new Date();
+            
+            if (filteredReminders.length === 0) {
+                let emptyMessage = '';
+                switch(currentFilter) {
+                    case 'active':
+                        emptyMessage = 'Aucun rappel actif pour le moment.';
+                        break;
+                    case 'upcoming':
+                        emptyMessage = 'Aucun rappel à venir.';
+                        break;
+                    case 'completed':
+                        emptyMessage = 'Aucun rappel terminé.';
+                        break;
+                    case 'expired':
+                        emptyMessage = 'Aucun rappel expiré.';
+                        break;
+                    default:
+                        emptyMessage = 'Aucun rappel enregistré. Commencez par ajouter votre premier rappel !';
+                }
+                
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-inbox"></i>
+                        <h3>${emptyMessage}</h3>
+                        ${currentFilter === 'all' ? `
+                            <button onclick="openAddModal()" style="background: #4285f4; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; margin-top: 15px;">
+                                <i class="fas fa-plus"></i> Ajouter un rappel
+                            </button>
+                        ` : ''}
+                    </div>
+                `;
+                return;
+            }
+            
+            let html = '';
+            
+            filteredReminders.forEach((reminder, index) => {
+                const titre = reminder[0] || 'Sans titre';
+                const details = reminder[1] || '';
+                const debut = reminder[2] || '';
+                const fin = reminder[3] || '';
+                const statut = reminder[4] || 'Non';
+                const email = reminder[5] || '';
+                const message = reminder[6] || '';
+                
+                // Déterminer le statut
+                let statusClass = '';
+                let statusText = '';
+                let isActive = false;
+                let isUpcoming = false;
+                let isExpired = false;
+                
+                if (statut.toString().toLowerCase() === 'oui') {
+                    statusClass = 'status-completed';
+                    statusText = 'Terminé';
+                } else if (debut && fin) {
+                    const dateDebut = new Date(debut);
+                    const dateFin = new Date(fin);
+                    
+                    if (maintenant < dateDebut) {
+                        statusClass = 'status-upcoming';
+                        statusText = 'À venir';
+                        isUpcoming = true;
+                    } else if (maintenant >= dateDebut && maintenant <= dateFin) {
+                        statusClass = 'status-active';
+                        statusText = 'En cours';
+                        isActive = true;
+                    } else if (maintenant > dateFin) {
+                        statusClass = 'status-completed';
+                        statusText = 'Expiré';
+                        isExpired = true;
+                    }
+                }
+                
+                html += `
+                    <div class="reminder-card">
+                        <div class="reminder-title">${titre}</div>
+                        ${details ? `<div class="reminder-details">${details}</div>` : ''}
+                        <div class="reminder-date">
+                            <strong><i class="far fa-clock"></i> Début:</strong> ${formatDate(debut)}<br>
+                            <strong><i class="far fa-calendar-times"></i> Fin:</strong> ${formatDate(fin)}
+                        </div>
+                        ${email ? `<div class="reminder-details"><strong><i class="far fa-envelope"></i> Email:</strong> ${email}</div>` : ''}
+                        ${message ? `<div class="reminder-details"><strong><i class="far fa-comment"></i> Message:</strong> ${message}</div>` : ''}
+                        <div class="reminder-status ${statusClass}">
+                            ${statusText}
+                        </div>
+                        <div class="reminder-actions">
+                            ${statut.toString().toLowerCase() === 'non' ? `
+                                <button class="btn-complete" onclick="marquerAccompli('${titre.replace(/'/g, "\\'")}', 
+                                        '${details.replace(/'/g, "\\'")}')">
+                                    <i class="fas fa-check"></i> Accomplir
+                                </button>
+                            ` : ''}
+                            ${isActive ? `
+                                <button class="btn-edit" onclick="alert('Fonctionnalité d\\'édition à implémenter')">
+                                    <i class="fas fa-edit"></i> Modifier
+                                </button>
+                            ` : ''}
+                            <button class="btn-delete" onclick="deleteReminder('${titre.replace(/'/g, "\\'")}', 
+                                    '${details.replace(/'/g, "\\'")}')">
+                                <i class="fas fa-trash"></i> Supprimer
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+
+        // Fonction pour supprimer un rappel
+        async function deleteReminder(titre, details) {
+            if (!confirm(`Voulez-vous vraiment supprimer le rappel "${titre}" ? Cette action est irréversible.`)) {
+                return;
+            }
+            
+            // Note: Vous devrez ajouter une action "supprimer" dans votre Google Apps Script
+            const url = `${WEB_APP_URL}?action=supprimer&titre=${encodeURIComponent(titre)}&details=${encodeURIComponent(details)}&t=${Date.now()}`;
+            
+            try {
+                await fetch(url, { method: 'GET', mode: 'no-cors' });
+                alert(`Le rappel "${titre}" a été supprimé.`);
+                await loadAllReminders();
+                await checkReminders(true);
+            } catch (e) {
+                console.error("Erreur lors de la suppression", e);
+                alert("Erreur lors de la suppression du rappel.");
+            }
+        }
+
+        // Fonction pour vérifier les rappels actifs
+        async function checkReminders(silent = false) {
+            const maintenant = new Date();
+            
+            try {
+                const response = await fetch(WEB_APP_URL + "?t=" + Date.now());
+                const rappels = await response.json();
+                
+                // Filtrer les rappels actifs
+                activeReminders = rappels.filter(r => {
+                    if (!r[2] || !r[3]) return false;
+                    
+                    try {
+                        const d = new Date(r[2]);
+                        const f = new Date(r[3]);
+                        
+                        // Vérifier si les dates sont valides
+                        if (isNaN(d.getTime()) || isNaN(f.getTime())) {
+                            return false;
+                        }
+                        
+                        return (maintenant >= d && maintenant <= f && 
+                                r[4] && r[4].toString().toLowerCase() === "non");
+                    } catch (e) {
+                        console.error("Erreur de date:", e);
+                        return false;
+                    }
+                });
+
+                // Mettre à jour le badge de notification
+                updateNotificationBadge();
+                
+                // Afficher la modal seulement au premier chargement (si silent = false)
+                if (!silent && activeReminders.length > 0) {
+                    // Afficher la modal seulement au premier chargement de la page
+                    // (pas à chaque intervalle)
+                    const firstLoad = localStorage.getItem('firstLoad') !== 'false';
+                    if (firstLoad) {
+                        await showActiveReminders();
+                        localStorage.setItem('firstLoad', 'false');
+                    }
+                }
+                
+            } catch (e) {
+                console.error("Erreur de synchronisation:", e);
+            }
+        }
+
+        // Fonction pour afficher la modal des rappels actifs
+        async function showActiveReminders() {
+            if (activeReminders.length === 0) {
+                await checkReminders(true);
+            }
+            
+            if (activeReminders.length > 0) {
+                let html = "";
+                activeReminders.forEach(r => {
+                    html += `
+                        <div class="rappel-item">
+                            <div style="flex: 1;">
+                                <strong>${r[0] || ''}</strong><br>
+                                <small>${r[1] || ""}</small><br>
+                                <small style="color: #666;">
+                                    ${formatDate(r[2])} - ${formatDate(r[3])}
+                                </small>
+                            </div>
+                            <button onclick="marquerAccompli('${(r[0] || '').replace(/'/g, "\\'")}', 
+                                    '${(r[1] || '').replace(/'/g, "\\'")}')" 
+                                    style="background: #28a745; padding: 5px 10px; font-size: 0.8em; margin-left: 10px; border: none; border-radius: 4px; color: white; cursor: pointer;">
+                                <i class="fas fa-check"></i> Accomplir
+                            </button>
+                        </div>`;
+                });
+                document.getElementById('alertContent').innerHTML = html;
+                document.getElementById('alertModal').style.display = 'block';
+                document.getElementById('overlay').style.display = 'block';
+                
+                // Masquer le badge de notification
+                document.getElementById('notificationBadge').style.display = 'none';
+            } else {
+                alert("Aucun rappel actif pour le moment.");
+            }
+        }
+
+        // Fonction pour formater la date
+        function formatDate(dateString) {
+            try {
+                if (!dateString) return 'Non définie';
+                const date = new Date(dateString);
+                return date.toLocaleString('fr-FR', {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+            } catch (e) {
+                return dateString;
+            }
+        }
+
+        // Fonction pour mettre à jour le badge de notification
+        function updateNotificationBadge() {
+            const badge = document.getElementById('notificationBadge');
+            const countSpan = document.getElementById('reminderCount');
+            
+            if (activeReminders.length > 0) {
+                countSpan.textContent = activeReminders.length;
+                badge.style.display = 'block';
+                
+                // Ajouter une animation pour attirer l'attention
+                badge.style.animation = 'pulse 1s';
+                setTimeout(() => {
+                    badge.style.animation = '';
+                }, 1000);
+            } else {
+                badge.style.display = 'none';
+            }
+        }
+
+        // Initialisation au chargement de la page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialiser la navigation
+            const navButtons = document.querySelectorAll('.nav-button');
+            navButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const targetId = this.getAttribute('data-target');
+                    if (targetId === 'rappelles') {
+                        // Charger les rappels quand on ouvre la section
+                        loadAllReminders();
+                    }
+                });
+            });
+            
+            // Marquer que c'est le premier chargement
+            localStorage.setItem('firstLoad', 'true');
+            
+            // Charger tous les rappels
+            loadAllReminders();
+            
+            // Vérifier les rappels actifs
+            checkReminders();
+            
+            // Actualiser les rappels actifs toutes les minutes
+            setInterval(() => {
+                checkReminders(true);
+            }, 60 * 1000);
+            
+            // Actualiser tous les rappels toutes les 5 minutes
+            setInterval(() => {
+                loadAllReminders();
+            }, 5 * 60 * 1000);
         });
-        document.getElementById('alertContent').innerHTML = html;
-        document.getElementById('alertModal').style.display = 'block';
-        document.getElementById('overlay').style.display = 'block';
-        
-        // Masquer le badge de notification
-        document.getElementById('notificationBadge').style.display = 'none';
-    } else {
-        alert("Aucun rappel actif pour le moment.");
-    }
-}
 
-// Fonction pour formater la date
-function formatDate(dateString) {
-    try {
-        if (!dateString) return 'Non définie';
-        const date = new Date(dateString);
-        return date.toLocaleString('fr-FR', {
-            day: '2-digit',
-            month: '2-digit',
-            year: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit'
-        });
-    } catch (e) {
-        return dateString;
-    }
-}
-
-// Fonction pour mettre à jour le badge de notification
-function updateNotificationBadge() {
-    const badge = document.getElementById('notificationBadge');
-    const countSpan = document.getElementById('reminderCount');
-    
-    if (activeReminders.length > 0) {
-        countSpan.textContent = activeReminders.length;
-        badge.style.display = 'block';
-        
-        badge.style.animation = 'pulse 1s';
-        setTimeout(() => {
-            badge.style.animation = '';
-        }, 1000);
-    } else {
-        badge.style.display = 'none';
-    }
-}
-
-// Initialisation au chargement de la page
-document.addEventListener('DOMContentLoaded', function() {
-    localStorage.setItem('firstLoad', 'true');
-    
-    // Charger tous les rappels
-    loadAllReminders();
-    
-    // Vérifier les rappels actifs
-    checkReminders();
-    
-    // Actualiser les rappels actifs toutes les minutes
-    setInterval(() => {
-        checkReminders(true);
-    }, 60 * 1000);
-    
-    // Actualiser tous les rappels toutes les 5 minutes
-    setInterval(() => {
-        loadAllReminders();
-    }, 5 * 60 * 1000);
-});
-
-// Style pour l'animation du badge
-const style = document.createElement('style');
-style.textContent = `
-    @keyframes pulse {
-        0% { transform: scale(1); }
-        50% { transform: scale(1.1); }
-        100% { transform: scale(1); }
-    }
-`;
-document.head.appendChild(style);
+        // Style pour l'animation du badge
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes pulse {
+                0% { transform: scale(1); }
+                50% { transform: scale(1.1); }
+                100% { transform: scale(1); }
+            }
+        `;
+        document.head.appendChild(style);
        
     </script>
 </body>
 </html>
+
 
