@@ -1260,6 +1260,13 @@
     </div>
     
 <!-- Badge de notification -->
+   <h2>Mes Rappels</h2>
+    <button onclick="openAddModal()">+ Ajouter un Rappel</button>
+    <button onclick="showActiveReminders()" style="background: #d93025; margin-left: 10px;">
+        Voir les rappels actifs
+    </button>
+
+    <!-- Badge de notification -->
     <div id="notificationBadge" onclick="showActiveReminders()">
         <span id="reminderCount">0</span> rappel(s) actif(s)
     </div>
@@ -1288,6 +1295,7 @@
         <div id="alertContent"></div>
         <button onclick="closeAll()" style="width: 100%; background: #333; margin-top: 15px;">Fermer</button>
     </div>
+
 
     <!-- Footer -->
     
@@ -1574,6 +1582,7 @@
     </script>
 </body>
 </html>
+
 
 
 
