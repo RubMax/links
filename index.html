@@ -631,15 +631,13 @@
             <button class="nav-button active" data-target="utiles">
                 <i class="fas fa-tools"></i> Utilitaires
             </button>
+            <!-- rappelles===================== -->
             <button onclick="openAddModal()" class="nav-button">+ Ajouter un Rappel</button>
     <button onclick="showActiveReminders()" style="background: #d93025; margin-left: 10px;">
         Voir les rappels actifs
     </button>
-             <!-- Badge de notification -->
-    <div id="notificationBadge" onclick="showActiveReminders()">
-        <span id="reminderCount">0</span> rappel(s) actif(s)
-    </div>
-
+     
+<!-- rappelles===================== -->
     <div id="overlay" class="overlay" onclick="closeAll()"></div>
             <button class="nav-button" data-target="federal">
                 <i class="fas fa-landmark"></i> Services Fédéraux
@@ -1259,19 +1257,14 @@
         </div>
     </div>
     
-<!-- Badge de notification -->
-   <h2>Mes Rappels</h2>
-    <button onclick="openAddModal()">+ Ajouter un Rappel</button>
-    <button onclick="showActiveReminders()" style="background: #d93025; margin-left: 10px;">
-        Voir les rappels actifs
-    </button>
 
-    <!-- Badge de notification -->
+   
+
+  
+            <!-- Badge de notification -->
     <div id="notificationBadge" onclick="showActiveReminders()">
         <span id="reminderCount">0</span> rappel(s) actif(s)
     </div>
-
-    <div id="overlay" class="overlay" onclick="closeAll()"></div>
     
     <!-- Modal pour ajouter un rappel -->
     <div id="modal">
@@ -1339,6 +1332,9 @@
                 currentActiveSection = document.getElementById('utiles');
             }
         });
+        //=========================================================
+        //=======================================
+        //================================================
          const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyCgtLSlxZSPAXG5aezcxXOYFuLbU8yqrGL-LWpzHSfrmEIE8zUpoGhGFUZYUVFSYTx2A/exec";
         
         // Variable pour stocker les rappels actifs
@@ -1582,6 +1578,7 @@
     </script>
 </body>
 </html>
+
 
 
 
