@@ -127,6 +127,7 @@
         
         // Variable pour stocker les rappels actifs
         let activeReminders = [];
+        let lastCheckTime = 0;
 
         // Fonction pour ouvrir la modal d'ajout
         function openAddModal() {
@@ -184,7 +185,7 @@
                 closeAll();
                 
                 // Mettre à jour la liste des rappels
-                await checkReminders(true); // true = ne pas afficher la modal
+                await checkReminders(true);
                 
             } catch (e) {
                 console.log("Note: Fetch a renvoyé une erreur");
@@ -214,12 +215,13 @@
             }
         }
 
-        // Fonction pour vérifier les rappels actifs (ne les affiche pas automatiquement)
-        async function checkReminders(silent = false) {
+        // Fonction pour vérifier les rappels actifs
+        async function checkReminders(forceShowModal = false) {
             const maintenant = new Date();
+            const currentTime = Date.now();
             
             try {
-                const response = await fetch(WEB_APP_URL + "?t=" + Date.now());
+                const response = await fetch(WEB_APP_URL + "?t=" + currentTime);
                 const rappels = await response.json();
                 
                 // Filtrer les rappels actifs
@@ -246,14 +248,26 @@
                 // Mettre à jour le badge de notification
                 updateNotificationBadge();
                 
-                // Afficher la modal seulement au premier chargement (si silent = false)
-                if (!silent && activeReminders.length > 0) {
-                    // Afficher la modal seulement au premier chargement de la page
-                    // (pas à chaque intervalle)
-                    const firstLoad = localStorage.getItem('firstLoad') !== 'false';
-                    if (firstLoad) {
-                        await showActiveReminders();
-                        localStorage.setItem('firstLoad', 'false');
+                // Afficher la modal si:
+                // 1. Il y a des rappels actifs ET
+                // 2. (forceShowModal = true) OU (c'est un check automatique toutes les 10 minutes)
+                if (activeReminders.length > 0) {
+                    // Vérifier si la modal n'est pas déjà affichée
+                    const isModalAlreadyShown = document.getElementById('alertModal').style.display === 'block';
+                    
+                    if (!isModalAlreadyShown) {
+                        // Vérifier si c'est le moment d'afficher (toutes les 10 minutes)
+                        const timeSinceLastCheck = currentTime - lastCheckTime;
+                        const tenMinutes = 10 * 60 * 1000;
+                        
+                        // Afficher si:
+                        // - forceShowModal est vrai OU
+                        // - C'est le premier check OU
+                        // - Ça fait plus de 10 minutes depuis le dernier affichage
+                        if (forceShowModal || lastCheckTime === 0 || timeSinceLastCheck >= tenMinutes) {
+                            await showActiveReminders();
+                            lastCheckTime = currentTime;
+                        }
                     }
                 }
                 
@@ -264,9 +278,8 @@
 
         // Fonction pour afficher la modal des rappels actifs
         async function showActiveReminders() {
-            if (activeReminders.length === 0) {
-                await checkReminders(true);
-            }
+            // Vérifier à nouveau les rappels avant d'afficher
+            await checkReminders(true);
             
             if (activeReminders.length > 0) {
                 let html = "";
@@ -291,9 +304,15 @@
                 document.getElementById('alertModal').style.display = 'block';
                 document.getElementById('overlay').style.display = 'block';
                 
-                // Masquer le badge de notification
+                // Masquer le badge de notification (car la modal est visible)
                 document.getElementById('notificationBadge').style.display = 'none';
+                
+                // Mettre à jour le temps du dernier affichage
+                lastCheckTime = Date.now();
+                
             } else {
+                // Si aucun rappel actif, fermer la modal si elle est ouverte
+                closeAll();
                 alert("Aucun rappel actif pour le moment.");
             }
         }
@@ -319,7 +338,10 @@
             const badge = document.getElementById('notificationBadge');
             const countSpan = document.getElementById('reminderCount');
             
-            if (activeReminders.length > 0) {
+            // Vérifier si la modal des alertes est déjà ouverte
+            const isAlertModalOpen = document.getElementById('alertModal').style.display === 'block';
+            
+            if (activeReminders.length > 0 && !isAlertModalOpen) {
                 countSpan.textContent = activeReminders.length;
                 badge.style.display = 'block';
                 
@@ -333,23 +355,42 @@
             }
         }
 
+        // Fonction pour vérifier l'heure actuelle (si vous voulez limiter à certaines heures)
+        function isWithinReminderHours() {
+            const maintenant = new Date();
+            const heure = maintenant.getHours();
+            const minutes = maintenant.getMinutes();
+            
+            // Exemple: Autoriser seulement entre 8h et 20h
+            // Vous pouvez ajuster ou supprimer cette limite
+            return heure >= 8 && heure < 20;
+        }
+
         // Vérification au chargement et toutes les 10 minutes
         document.addEventListener('DOMContentLoaded', function() {
-            // Marquer que c'est le premier chargement
-            localStorage.setItem('firstLoad', 'true');
+            // Vérifier les rappels immédiatement au chargement
+            checkReminders(true);
             
-            // Vérifier les rappels au chargement (modal s'affiche si besoin)
-            checkReminders();
-            
-            // Vérifier toutes les 10 minutes (sans afficher la modal)
+            // Vérifier toutes les 10 minutes (ET AFFICHER LA MODAL si besoin)
             setInterval(() => {
-                checkReminders(true); // true = mode silencieux
-            }, 3 * 60 * 1000);
+                if (isWithinReminderHours()) {
+                    checkReminders(true);
+                }
+            }, 10 * 60 * 1000);
             
-            // Vérifier aussi toutes les minutes pour les notifications en temps réel
+            // Vérifier aussi toutes les minutes pour détecter rapidement les nouveaux rappels
             setInterval(() => {
-                checkReminders(true);
+                if (isWithinReminderHours()) {
+                    checkReminders(false); // false = ne pas forcer l'affichage
+                }
             }, 60 * 1000);
+            
+            // Vérifier quand la fenêtre redevient visible
+            document.addEventListener('visibilitychange', function() {
+                if (!document.hidden) {
+                    checkReminders(false);
+                }
+            });
         });
 
         // Style pour l'animation du badge
@@ -360,9 +401,23 @@
                 50% { transform: scale(1.1); }
                 100% { transform: scale(1); }
             }
+            
+            @keyframes slideIn {
+                from { 
+                    opacity: 0;
+                    transform: translate(-50%, -60%);
+                }
+                to { 
+                    opacity: 1;
+                    transform: translate(-50%, -50%);
+                }
+            }
+            
+            #alertModal {
+                animation: slideIn 0.3s ease-out;
+            }
         `;
         document.head.appendChild(style);
     </script>
 </body>
 </html>
-
