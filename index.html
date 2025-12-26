@@ -1626,8 +1626,10 @@
 
         // Fonction pour ouvrir la modal d'ajout
         function openAddModal() {
-            document.getElementById('modal').style.display = 'block';
-            document.getElementById('overlay').style.display = 'block';
+    resetAddForm(); // Réinitialiser le formulaire
+    document.getElementById('modal').style.display = 'block';
+    document.getElementById('overlay').style.display = 'block';
+
             
             // Pré-remplir la date de début avec maintenant
             const now = new Date();
@@ -1963,10 +1965,16 @@
                                 </button>
                             ` : ''}
                             ${isActive ? `
-                                <button class="btn-edit" onclick="alert('Fonctionnalité d\\'édition à implémenter')">
-                                    <i class="fas fa-edit"></i> Modifier
-                                </button>
-                            ` : ''}
+    <button class="btn-edit" onclick="openEditModal('${titre.replace(/'/g, "\\'")}', 
+            '${details.replace(/'/g, "\\'")}', 
+            '${debut}', 
+            '${fin}', 
+            '${statut}', 
+            '${email.replace(/'/g, "\\'")}', 
+            '${message.replace(/'/g, "\\'")}')">
+        <i class="fas fa-edit"></i> Modifier
+    </button>
+` : ''}
                             <button class="btn-delete" onclick="deleteReminder('${titre.replace(/'/g, "\\'")}', 
                                     '${details.replace(/'/g, "\\'")}')">
                                 <i class="fas fa-trash"></i> Supprimer
@@ -2099,6 +2107,143 @@
                 return dateString;
             }
         }
+        // Fonction pour modifier un rappel
+function openEditModal(titre, details, debut, fin, statut, email, message) {
+    // Remplir le formulaire avec les données existantes
+    document.getElementById('titre').value = titre;
+    document.getElementById('details').value = details || '';
+    document.getElementById('debut').value = debut ? formatDateForInput(debut) : '';
+    document.getElementById('fin').value = fin ? formatDateForInput(fin) : '';
+    document.getElementById('email').value = email || '';
+    document.getElementById('message').value = message || '';
+    
+    // Changer le bouton pour "Modifier" au lieu de "Enregistrer"
+    const modal = document.getElementById('modal');
+    const h3 = modal.querySelector('h3');
+    const saveBtn = modal.querySelector('button[onclick="saveRappel()"]');
+    
+    h3.textContent = 'Modifier le Rappel';
+    saveBtn.innerHTML = '<i class="fas fa-edit"></i> Modifier';
+    saveBtn.onclick = function() { updateRappel(titre); };
+    
+    // Stocker l'ancien titre pour la mise à jour
+    modal.dataset.oldTitre = titre;
+    
+    // Ouvrir la modal
+    modal.style.display = 'block';
+    document.getElementById('overlay').style.display = 'block';
+}
+
+// Fonction pour formater la date pour l'input datetime-local
+function formatDateForInput(dateString) {
+    try {
+        if (!dateString) return '';
+        const date = new Date(dateString);
+        return date.toISOString().slice(0, 16);
+    } catch (e) {
+        return '';
+    }
+}
+
+// Fonction pour mettre à jour un rappel
+async function updateRappel(oldTitre) {
+    const titreEl = document.getElementById('titre');
+    const detailsEl = document.getElementById('details');
+    const debutEl = document.getElementById('debut');
+    const finEl = document.getElementById('fin');
+    const emailEl = document.getElementById('email');
+    const messageEl = document.getElementById('message');
+
+    // Validation des champs requis
+    if (!titreEl.value.trim()) {
+        alert("Veuillez saisir un titre");
+        return;
+    }
+    if (!debutEl.value || !finEl.value) {
+        alert("Veuillez saisir les dates de début et fin");
+        return;
+    }
+
+    // Construction de l'URL
+    const params = new URLSearchParams({
+        action: "modifier",
+        oldTitre: oldTitre,
+        titre: titreEl.value,
+        details: detailsEl.value,
+        debut: debutEl.value,
+        fin: finEl.value,
+        email: emailEl ? emailEl.value : "",
+        message: messageEl ? messageEl.value : "",
+        t: Date.now()
+    });
+
+    const url = `${WEB_APP_URL}?${params.toString()}`;
+
+    try {
+        // Afficher un indicateur de chargement
+        const modal = document.getElementById('modal');
+        const saveBtn = modal.querySelector('button[onclick="updateRappel(\'' + oldTitre + '\')"]');
+        const originalText = saveBtn.innerHTML;
+        saveBtn.innerHTML = '<div class="loading-spinner" style="display: inline-block; margin-right: 10px;"></div> Modification...';
+        saveBtn.disabled = true;
+
+        await fetch(url, { method: 'GET', mode: 'no-cors' });
+        
+        // Réinitialiser le bouton
+        saveBtn.innerHTML = originalText;
+        saveBtn.disabled = false;
+        
+        alert("✅ Rappel modifié avec succès !");
+        
+        // Fermer la modal
+        closeAll();
+        
+        // Réinitialiser le formulaire
+        [titreEl, detailsEl, debutEl, finEl, emailEl, messageEl].forEach(el => {
+            if(el) el.value = "";
+        });
+        
+        // Mettre à jour la liste des rappels
+        await loadAllReminders();
+        await checkReminders(true);
+        
+    } catch (e) {
+        console.log("Note: Fetch a renvoyé une erreur");
+        alert("Modification effectuée. Vérifiez votre feuille Google Sheet.");
+        closeAll();
+        await loadAllReminders();
+    }
+}
+
+// Fonction pour réinitialiser le formulaire d'ajout
+function resetAddForm() {
+    document.getElementById('titre').value = '';
+    document.getElementById('details').value = '';
+    
+    // Pré-remplir la date de début avec maintenant
+    const now = new Date();
+    const nowFormatted = now.toISOString().slice(0, 16);
+    document.getElementById('debut').value = nowFormatted;
+    
+    // Pré-remplir la date de fin avec +1 heure
+    const oneHourLater = new Date(now.getTime() + 60 * 60 * 1000);
+    const oneHourLaterFormatted = oneHourLater.toISOString().slice(0, 16);
+    document.getElementById('fin').value = oneHourLaterFormatted;
+    
+    document.getElementById('email').value = '';
+    document.getElementById('message').value = '';
+    
+    // Réinitialiser le bouton
+    const modal = document.getElementById('modal');
+    const h3 = modal.querySelector('h3');
+    const saveBtn = modal.querySelector('button[onclick^="updateRappel"]');
+    
+    if (saveBtn) {
+        h3.textContent = 'Nouveau Rappel';
+        saveBtn.innerHTML = '<i class="fas fa-save"></i> Enregistrer';
+        saveBtn.onclick = function() { saveRappel(); };
+    }
+}
 
         // Fonction pour mettre à jour le badge de notification
         function updateNotificationBadge() {
@@ -2167,5 +2312,6 @@
     </script>
 </body>
 </html>
+
 
 
