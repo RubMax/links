@@ -824,6 +824,23 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+        .reminder-actions .btn-edit {
+    background: #ffc107;
+    color: #212529;
+}
+
+.reminder-actions .btn-edit:hover {
+    background: #e0a800;
+}
+
+.reminder-actions .btn-delete {
+    background: #dc3545;
+    color: white;
+}
+
+.reminder-actions .btn-delete:hover {
+    background: #c82333;
+}
     </style>
 </head>
 <body>
@@ -1563,7 +1580,26 @@
         <i class="fas fa-bell"></i>
         <span id="reminderCount">0</span> rappel(s) actif(s)
     </div>
-    
+    <!-- Modal pour modifier un rappel -->
+<div id="editModal" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); border: none; box-shadow: 0 5px 15px rgba(0,0,0,0.3); padding: 30px; background: white; z-index: 11; border-radius: 8px; width: 300px;">
+    <h3><i class="fas fa-edit"></i> Modifier le Rappel</h3>
+    <input type="hidden" id="editAncienTitre">
+    <input type="text" id="editTitre" placeholder="Titre *" required>
+    <textarea id="editDetails" placeholder="Détails (facultatif)" rows="3"></textarea>
+    <label>Début :</label>
+    <input type="datetime-local" id="editDebut" required>
+    <label>Fin :</label>
+    <input type="datetime-local" id="editFin" required>
+    <input type="email" id="editEmail" placeholder="E-mail (facultatif)">
+    <textarea id="editMessage" placeholder="Message à envoyer par e-mail (facultatif)" rows="2"></textarea>
+
+    <button onclick="saveEdit()" style="width: 100%; margin-bottom: 10px; background: #ffc107; color: #212529; padding: 10px; border: none; border-radius: 4px; cursor: pointer;">
+        <i class="fas fa-save"></i> Enregistrer les modifications
+    </button>
+    <button onclick="closeAll()" style="width: 100%; background: #666; color: white; padding: 10px; border: none; border-radius: 4px; cursor: pointer;">
+        <i class="fas fa-times"></i> Annuler
+    </button>
+</div>
     <script>
     //=========================================================
 //=======================================
@@ -1640,12 +1676,112 @@
             document.getElementById('fin').value = oneHourLaterFormatted;
         }
 
-        // Fonction pour fermer toutes les modales
-        function closeAll() {
-            document.getElementById('modal').style.display = 'none';
-            document.getElementById('alertModal').style.display = 'none';
-            document.getElementById('overlay').style.display = 'none';
-        }
+        // Fonction pour ouvrir la modal de modification
+function openEditModal(rappel) {
+    // Remplir le formulaire avec les données du rappel
+    document.getElementById('editAncienTitre').value = rappel.titre;
+    document.getElementById('editTitre').value = rappel.titre;
+    document.getElementById('editDetails').value = rappel.details || '';
+    
+    // Formater les dates pour l'input datetime-local
+    const debutDate = new Date(rappel.debut);
+    const finDate = new Date(rappel.fin);
+    
+    document.getElementById('editDebut').value = debutDate.toISOString().slice(0, 16);
+    document.getElementById('editFin').value = finDate.toISOString().slice(0, 16);
+    document.getElementById('editEmail').value = rappel.email || '';
+    document.getElementById('editMessage').value = rappel.message || '';
+    
+    // Afficher la modal
+    document.getElementById('editModal').style.display = 'block';
+    document.getElementById('overlay').style.display = 'block';
+}
+
+// Fonction pour sauvegarder les modifications
+async function saveEdit() {
+    const ancienTitre = document.getElementById('editAncienTitre').value;
+    const titre = document.getElementById('editTitre').value;
+    const details = document.getElementById('editDetails').value;
+    const debut = document.getElementById('editDebut').value;
+    const fin = document.getElementById('editFin').value;
+    const email = document.getElementById('editEmail').value;
+    const message = document.getElementById('editMessage').value;
+
+    if (!titre.trim()) {
+        alert("Veuillez saisir un titre");
+        return;
+    }
+    if (!debut || !fin) {
+        alert("Veuillez saisir les dates de début et fin");
+        return;
+    }
+
+    const params = new URLSearchParams({
+        action: "modifier",
+        ancienTitre: ancienTitre,
+        titre: titre,
+        details: details,
+        debut: debut,
+        fin: fin,
+        email: email,
+        message: message,
+        t: Date.now()
+    });
+
+    const url = `${WEB_APP_URL}?${params.toString()}`;
+
+    try {
+        const saveBtn = document.querySelector('#editModal button[onclick="saveEdit()"]');
+        const originalText = saveBtn.innerHTML;
+        saveBtn.innerHTML = '<div class="loading-spinner" style="display: inline-block; margin-right: 10px;"></div> Enregistrement...';
+        saveBtn.disabled = true;
+
+        await fetch(url, { method: 'GET', mode: 'no-cors' });
+        
+        saveBtn.innerHTML = originalText;
+        saveBtn.disabled = false;
+        
+        alert("✅ Rappel modifié avec succès !");
+        closeAll();
+        
+        // Mettre à jour la liste des rappels
+        await loadAllReminders();
+        await checkReminders(true);
+        
+    } catch (e) {
+        console.log("Note: Fetch a renvoyé une erreur");
+        alert("Modification effectuée. Vérifiez votre feuille Google Sheet.");
+        closeAll();
+        await loadAllReminders();
+    }
+}
+
+// Fonction pour préparer la suppression
+async function deleteReminder(titre, details) {
+    if (!confirm(`Voulez-vous vraiment supprimer le rappel "${titre}" ? Cette action est irréversible.`)) {
+        return;
+    }
+    
+    const url = `${WEB_APP_URL}?action=supprimer&titre=${encodeURIComponent(titre)}&details=${encodeURIComponent(details)}&t=${Date.now()}`;
+    
+    try {
+        await fetch(url, { method: 'GET', mode: 'no-cors' });
+        alert(`Le rappel "${titre}" a été supprimé.`);
+        await loadAllReminders();
+        await checkReminders(true);
+    } catch (e) {
+        console.error("Erreur lors de la suppression", e);
+        alert("Erreur lors de la suppression du rappel.");
+    }
+}
+
+// Modifiez la fonction closeAll pour inclure la modal d'édition
+function closeAll() {
+    document.getElementById('modal').style.display = 'none';
+    document.getElementById('editModal').style.display = 'none';
+    document.getElementById('alertModal').style.display = 'none';
+    document.getElementById('overlay').style.display = 'none';
+}
 
         // Fonction pour sauvegarder un rappel
         async function saveRappel() {
@@ -1943,37 +2079,29 @@
                 }
                 
                 html += `
-                    <div class="reminder-card">
-                        <div class="reminder-title">${titre}</div>
-                        ${details ? `<div class="reminder-details">${details}</div>` : ''}
-                        <div class="reminder-date">
-                            <strong><i class="far fa-clock"></i> Début:</strong> ${formatDate(debut)}<br>
-                            <strong><i class="far fa-calendar-times"></i> Fin:</strong> ${formatDate(fin)}
-                        </div>
-                        ${email ? `<div class="reminder-details"><strong><i class="far fa-envelope"></i> Email:</strong> ${email}</div>` : ''}
-                        ${message ? `<div class="reminder-details"><strong><i class="far fa-comment"></i> Message:</strong> ${message}</div>` : ''}
-                        <div class="reminder-status ${statusClass}">
-                            ${statusText}
-                        </div>
-                        <div class="reminder-actions">
-                            ${statut.toString().toLowerCase() === 'non' ? `
-                                <button class="btn-complete" onclick="marquerAccompli('${titre.replace(/'/g, "\\'")}', 
-                                        '${details.replace(/'/g, "\\'")}')">
-                                    <i class="fas fa-check"></i> Accomplir
-                                </button>
-                            ` : ''}
-                            ${isActive ? `
-                                <button class="btn-edit" onclick="alert('Fonctionnalité d\\'édition à implémenter')">
-                                    <i class="fas fa-edit"></i> Modifier
-                                </button>
-                            ` : ''}
-                            <button class="btn-delete" onclick="deleteReminder('${titre.replace(/'/g, "\\'")}', 
-                                    '${details.replace(/'/g, "\\'")}')">
-                                <i class="fas fa-trash"></i> Supprimer
-                            </button>
-                        </div>
-                    </div>
-                `;
+    <div class="reminder-actions">
+        ${statut.toString().toLowerCase() === 'non' ? `
+            <button class="btn-complete" onclick="marquerAccompli('${titre.replace(/'/g, "\\'")}', 
+                    '${details.replace(/'/g, "\\'")}')">
+                <i class="fas fa-check"></i> Accomplir
+            </button>
+            <button class="btn-edit" onclick="openEditModal({
+                titre: '${titre.replace(/'/g, "\\'")}',
+                details: '${details.replace(/'/g, "\\'")}',
+                debut: '${debut}',
+                fin: '${fin}',
+                email: '${email.replace(/'/g, "\\'")}',
+                message: '${message.replace(/'/g, "\\'")}'
+            })">
+                <i class="fas fa-edit"></i> Modifier
+            </button>
+        ` : ''}
+        <button class="btn-delete" onclick="deleteReminder('${titre.replace(/'/g, "\\'")}', 
+                '${details.replace(/'/g, "\\'")}')">
+            <i class="fas fa-trash"></i> Supprimer
+        </button>
+    </div>
+`;
             });
             
             container.innerHTML = html;
@@ -2167,6 +2295,7 @@
     </script>
 </body>
 </html>
+
 
 
 
