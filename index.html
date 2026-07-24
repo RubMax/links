@@ -2236,8 +2236,7 @@
         `;
         document.head.appendChild(style);
        
-    </script>
-    <script>
+
 
 const closeBtn = document.getElementById('closePopup');
 const link = document.getElementById('minitHaitiLink');
@@ -2258,6 +2257,25 @@ link.addEventListener('click', function(e) {
 document.getElementById('closePopup').addEventListener('click', function() {
     document.getElementById('popupHaiti').style.display = 'none';
 });
+
+        // Modifier la fonction de sauvegarde automatique
+function autoBackupTasks() {
+  // 1. Sauvegarde locale (dossier Téléchargements)
+  const data = JSON.stringify(tasks, null, 2);
+  const blob = new Blob([data], { type: "application/json" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "taches_backup.json";
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+  
+  // 2. Sauvegarde vers Google Drive
+  saveToGoogleDrive();
+  
+  console.log("✅ Sauvegarde auto effectuée à", new Date().toLocaleString());
+}
 </script>
 </body>
 </html>
