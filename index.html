@@ -6,6 +6,8 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>RubMax Servicos - Tableau de Bord</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <style>
         /* Variables de couleurs */
         :root {
@@ -848,6 +850,368 @@
 .popup-content h2{
     margin-bottom:15px;
 }
+
+.wrapper {
+  height: 100%;
+  margin: 0 auto;
+  max-width: 95%;
+  background: white;
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+
+    .container-fluid {
+          min-height: 100vh;
+          border-radius: 20px;
+        }
+
+    h6 {
+      text-align: center;
+      color: #2c3e50;
+      margin-bottom: 2px;
+    }
+
+    input, select, button {
+      padding: 5px;
+      margin: 5px 5px 5px 0;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+      font-size: 1em;
+    }
+
+    #taskInput { width: 35%; }
+    #repeatSelect, #dateInput, #reminderTimeInput { width: 10%; }
+
+    @media (max-width: 600px) {
+      #taskInput, #repeatSelect, #dateInput, #reminderTimeInput {
+        width: 100% !important;
+      }
+    }
+
+    button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  transition: background-color 0.3s ease;
+  padding: 2px 6px;
+  font-size: 12px;
+  line-height: 1;
+  border-radius: 4px;
+  display: inline-block;
+}
+
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    input, select {
+      font-size: 12px;
+      padding: 2px 6px;
+      margin: 2px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+      line-height: 1;
+      box-sizing: border-box;
+    }
+
+    .task {
+      background-color: rgb(131, 173, 220);
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      margin-top: 5px;
+      padding: 5px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: transform 0.2s, opacity 0.5s ease-in-out;
+      opacity: 0;
+      animation: fadeIn 0.5s forwards;
+    }
+
+    @keyframes fadeIn {
+      to { opacity: 1; }
+    }
+    
+
+    #taskList {
+      font-size: 15px;
+      margin-top: 8px;
+    min-height: 400px;
+    max-height: 300px;
+    overflow-y: auto;
+    background-color: #f8f9fa;
+    border-radius: 10px;
+    padding: 10px;
+    font-size: 13px;
+  }
+
+    .task.completed span {
+      text-decoration: line-through;
+      color: #95a5a6;
+    }
+
+    .priority-daily { background-color: #e3f2fd; border-left: 6px solid #2196f3; }
+    .priority-monthly { background-color: #fff3e0; border-left: 6px solid #fb8c00; }
+    .priority-yearly { background-color: #e8f5e9; border-left: 6px solid #4caf50; }
+
+    .buttons { display: flex; gap: 5px; }
+    .buttons button { background-color: rgb(131, 173, 220); color: white; }
+    .buttons button:hover { background-color: #495057; }
+
+    .info { font-size: 0.75em; color: #007bff; }
+
+    .filter-buttons button {
+      padding: 4px 6px;
+      border-radius: 8px;
+      cursor: pointer;
+      border: none;
+    }
+
+    .filter-buttons button:hover {
+      background-color: #0056b3;
+    }
+
+    .filter-buttons .active {
+      background-color: gray !important;
+    }
+
+    .search-section .icon {
+          font-size: 14px;
+        }
+            .image-container {
+          text-align: center;
+        }
+
+        .image-container img {
+          width: 400px;
+          height: 90px;
+          margin-bottom: 0px;
+        }
+
+        /* Style pour les notifications dans la page */
+        .notification-banner {
+          position: fixed;
+          top: 20px;
+          right: 20px;
+          z-index: 9999;
+          max-width: 400px;
+          animation: slideIn 0.5s ease;
+        }
+        
+        @keyframes slideIn {
+          from { transform: translateX(100%); opacity: 0; }
+          to { transform: translateX(0); opacity: 1; }
+        }
+        /* =========================================================== */
+/* STYLES DE LA LISTE DE TÂCHES (intégrée dans la section rappelles) */
+/* =========================================================== */
+.todo-app-wrapper {
+    padding: 15px;
+    background-color: #f8f9fa;
+    border-radius: 10px;
+}
+
+.todo-app-wrapper .task-input-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 15px;
+}
+
+.todo-app-wrapper .task-input-group input,
+.todo-app-wrapper .task-input-group select {
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+}
+
+.todo-app-wrapper #taskInput { flex: 1; min-width: 150px; }
+.todo-app-wrapper #repeatSelect { min-width: 100px; }
+.todo-app-wrapper #dateInput { min-width: 130px; }
+.todo-app-wrapper #reminderTimeInput { min-width: 100px; }
+
+.todo-app-wrapper .btn-add {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.todo-app-wrapper .btn-add:hover {
+    background-color: #0056b3;
+}
+
+.todo-app-wrapper .filter-section {
+    margin: 10px 0;
+}
+
+.todo-app-wrapper .filter-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+}
+
+.todo-app-wrapper .filter-buttons button {
+    padding: 6px 12px;
+    border-radius: 20px;
+    border: 1px solid #ddd;
+    background: white;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-size: 12px;
+}
+
+.todo-app-wrapper .filter-buttons button:hover {
+    background: #e9ecef;
+}
+
+.todo-app-wrapper .filter-buttons button.active {
+    background: #007bff;
+    color: white;
+    border-color: #007bff;
+}
+
+.todo-app-wrapper .search-section {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 10px 0;
+}
+
+.todo-app-wrapper .search-section input {
+    flex: 1;
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+}
+
+.todo-app-wrapper #taskList {
+    max-height: 400px;
+    overflow-y: auto;
+    background-color: white;
+    border-radius: 10px;
+    padding: 10px;
+    min-height: 200px;
+}
+
+.todo-app-wrapper .task {
+    background-color: rgb(131, 173, 220);
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    margin-top: 8px;
+    padding: 10px 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: transform 0.2s, opacity 0.5s ease-in-out;
+    opacity: 0;
+    animation: fadeIn 0.5s forwards;
+}
+
+.todo-app-wrapper .task.completed span {
+    text-decoration: line-through;
+    color: #95a5a6;
+}
+
+.todo-app-wrapper .task .task-text {
+    flex: 1;
+}
+
+.todo-app-wrapper .task .task-info {
+    font-size: 0.75em;
+    color: #007bff;
+    display: block;
+}
+
+.todo-app-wrapper .task .buttons {
+    display: flex;
+    gap: 5px;
+}
+
+.todo-app-wrapper .task .buttons button {
+    background-color: rgba(255,255,255,0.3);
+    border: none;
+    border-radius: 4px;
+    padding: 4px 8px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.todo-app-wrapper .task .buttons button:hover {
+    background-color: rgba(255,255,255,0.6);
+}
+
+.todo-app-wrapper .priority-daily { background-color: #e3f2fd; border-left: 6px solid #2196f3; }
+.todo-app-wrapper .priority-monthly { background-color: #fff3e0; border-left: 6px solid #fb8c00; }
+.todo-app-wrapper .priority-yearly { background-color: #e8f5e9; border-left: 6px solid #4caf50; }
+
+.todo-app-wrapper .backup-section {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 15px;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    background-color: #f8f9fa;
+}
+
+.todo-app-wrapper .backup-section button {
+    padding: 6px 12px;
+    border-radius: 6px;
+    border: none;
+    background: #6c757d;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.todo-app-wrapper .backup-section button:hover {
+    background: #5a6268;
+}
+
+.todo-app-wrapper #message {
+    margin-top: 10px;
+    color: green;
+}
+
+.todo-app-wrapper .notification-banner {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+    max-width: 400px;
+    animation: slideIn 0.5s ease;
+}
+
+@keyframes slideIn {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes fadeIn {
+    to { opacity: 1; }
+}
+
+@media (max-width: 768px) {
+    .todo-app-wrapper .task-input-group {
+        flex-direction: column;
+    }
+    .todo-app-wrapper .task-input-group input,
+    .todo-app-wrapper .task-input-group select {
+        width: 100% !important;
+    }
+    .todo-app-wrapper .filter-buttons button {
+        flex: 1;
+        text-align: center;
+    }
+}
     </style>
 </head>
 <body>
@@ -990,71 +1354,64 @@
             </section>
             
 
-             <!-- =========================================================== -->
-            <!-- SECTION RAPPELLES COMPLÈTE -->
-            <!-- =========================================================== -->
-            <section id="rappelles" class="content-section">
-                <div class="section-header">
-                    <i class="fas fa-bell"></i>
-                    <h2>Mes Rappels</h2>
+           <!-- =========================================================== -->
+<!-- SECTION RAPPELLES - CONTENU REMPLACÉ PAR LA LISTE DE TÂCHES -->
+<!-- =========================================================== -->
+<section id="rappelles" class="content-section">
+    <div class="section-header">
+        <i class="fas fa-bell"></i>
+        <h2>Mes Rappels - Liste des Tâches</h2>
+    </div>
+    <div class="section-content">
+        <!-- INTÉGRATION DE LA LISTE DE TÂCHES -->
+        <div class="todo-app-wrapper">
+            <!-- Entrée des tâches -->
+            <div class="task-input-group">
+                <input type="text" id="taskInput" placeholder="Entrez une tâche..." required>
+                <select id="repeatSelect">
+                    <option value="day">🗓️ Jour</option>
+                    <option value="daily">🗓️ Journalier</option>
+                    <option value="monthly">📅 Mensuel</option>
+                    <option value="yearly">🎉 Annuel</option>
+                </select>
+                <input type="date" id="dateInput">
+                <input type="time" id="reminderTimeInput">
+                <button class="btn-add" onclick="addTask()">➕ Ajouter</button>
+            </div>
+
+            <!-- Recherche -->
+            <div class="search-section">
+                <span>🔍</span>
+                <input type="text" id="searchInput" placeholder="Rechercher une tâche..." oninput="loadTasks()">
+            </div>
+
+            <!-- Filtres -->
+            <div class="filter-section">
+                <div class="filter-buttons">
+                    <button onclick="setFilter('all')" id="filter-all" class="active">Toutes</button>
+                    <button onclick="setFilter('today')" id="filter-today">Aujourd'hui</button>
+                    <button onclick="setFilter('daily')" id="filter-daily">Journalier</button>
+                    <button onclick="setFilter('monthly')" id="filter-monthly">Mensuelles</button>
+                    <button onclick="setFilter('yearly')" id="filter-yearly">Annuel</button>
+                    <button onclick="setFilter('done')" id="filter-done">Accomplies</button>
+                    <button onclick="setFilter('notDone')" id="filter-notDone">Non accomplies</button>
                 </div>
-                <div class="section-content">
-                    <!-- Bouton pour ajouter un nouveau rappel -->
-                    <div style="text-align: center; margin-bottom: 20px;">
-                        <a href="https://rubmax.github.io/todo-pro-app/" target="_blank" 
-   style="background: #4285f4; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; text-decoration: none; display: inline-block;">
-    <i class="fas fa-plus"></i> Ajouter un nouveau rappel
-</a>
-                    </div>
-                    
-                    <!-- Statistiques -->
-                    <div class="reminders-stats">
-                        <div class="stat-card">
-                            <div class="stat-number" id="statTotal">0</div>
-                            <div class="stat-label">Total</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-number" id="statActive">0</div>
-                            <div class="stat-label">Actifs</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-number" id="statUpcoming">0</div>
-                            <div class="stat-label">À venir</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-number" id="statCompleted">0</div>
-                            <div class="stat-label">Terminés</div>
-                        </div>
-                    </div>
-                    
-                    <!-- Filtres -->
-                    <div class="reminder-filters">
-                        <button class="filter-btn active" onclick="filterReminders('all')">Tous</button>
-                        <button class="filter-btn" onclick="filterReminders('active')">Actifs</button>
-                        <button class="filter-btn" onclick="filterReminders('upcoming')">À venir</button>
-                        <button class="filter-btn" onclick="filterReminders('completed')">Terminés</button>
-                        <button class="filter-btn" onclick="filterReminders('expired')">Expirés</button>
-                    </div>
-                    
-                    <!-- Conteneur pour tous les rappels -->
-                    <div id="allRemindersContainer">
-                        <div class="reminder-header">
-                            <h3 style="margin: 0;">Tous mes rappels</h3>
-                            <div>
-                                <span id="totalRemindersCount">0</span> rappels au total
-                            </div>
-                        </div>
-                        <div id="allRemindersList">
-                            <!-- Les rappels seront chargés ici -->
-                            <div class="empty-state">
-                                <i class="fas fa-clock"></i>
-                                <h3>Chargement des rappels...</h3>
-                                <div class="loading-spinner"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
+            </div>
+
+            <!-- Liste des tâches -->
+            <div id="taskList"></div>
+
+            <!-- Backup et import -->
+            <div class="backup-section">
+                <button onclick="backupTasks()">💾 Backup</button>
+                <input type="file" id="backupFileInput" accept=".json" style="display: none;">
+                <button type="button" onclick="document.getElementById('backupFileInput').click()">📂 Importer</button>
+                <button onclick="importBackup()">📥 Ajouter</button>
+                <span id="message"></span>
+            </div>
+        </div>
+    </div>
+</section>
 
          
             <!-- Les autres sections restent inchangées -->
@@ -2235,6 +2592,270 @@
             }
         `;
         document.head.appendChild(style);
+
+
+        // ==========================================================
+// LISTE DE TÂCHES (localStorage)
+// ==========================================================
+let tasks = JSON.parse(localStorage.getItem("tasks") || "[]");
+let currentTaskFilter = 'all';
+
+function saveTasks() {
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+}
+
+function setFilter(value) {
+    currentTaskFilter = value;
+    document.querySelectorAll('.filter-buttons button').forEach(btn => btn.classList.remove('active'));
+    const activeBtn = document.getElementById('filter-' + value);
+    if (activeBtn) activeBtn.classList.add('active');
+    loadTasks();
+}
+
+function addTask() {
+    let text = document.getElementById("taskInput").value.trim();
+    if (!text) return;
+    text = text.charAt(0).toUpperCase() + text.slice(1);
+
+    const repeat = document.getElementById("repeatSelect").value;
+    const dueDate = document.getElementById("dateInput").value;
+    const reminderTime = document.getElementById("reminderTimeInput").value;
+    const taskDate = dueDate || "";
+    
+    const task = {
+        text,
+        repeat,
+        dueDate: taskDate,
+        reminderTime,
+        completed: false,
+        lastReminder: null
+    };
+    tasks.push(task);
+    saveTasks();
+
+    document.getElementById("taskInput").value = "";
+    document.getElementById("dateInput").value = "";
+    document.getElementById("reminderTimeInput").value = "";
+    loadTasks();
+}
+
+function toggleTask(index) {
+    tasks[index].completed = !tasks[index].completed;
+    saveTasks();
+    loadTasks();
+}
+
+function deleteTask(index) {
+    tasks.splice(index, 1);
+    saveTasks();
+    loadTasks();
+}
+
+function editTask(index) {
+    const task = tasks[index];
+    const newText = prompt("Modifier la tâche :", task.text);
+    if (newText === null || newText.trim() === "") return;
+
+    task.text = newText.trim();
+    task.repeat = prompt("Rappel (day, daily, monthly, yearly) :", task.repeat) || task.repeat;
+    task.dueDate = prompt("Date (YYYY-MM-DD) :", task.dueDate) || task.dueDate;
+    task.reminderTime = prompt("Heure de rappel (HH:MM) :", task.reminderTime) || task.reminderTime;
+
+    saveTasks();
+    loadTasks();
+}
+
+function matchesFilter(task) {
+    const today = new Date().toISOString().split("T")[0];
+    if (currentTaskFilter === "done") return task.completed;
+    if (currentTaskFilter === "notDone") return !task.completed;
+    if (currentTaskFilter === "today") return task.dueDate === today;
+    if (["day", "daily", "monthly", "yearly"].includes(currentTaskFilter)) return task.repeat === currentTaskFilter;
+    return true;
+}
+
+function matchesSearch(task) {
+    const search = document.getElementById("searchInput").value.toLowerCase();
+    return task.text.toLowerCase().includes(search);
+}
+
+function formatTaskDate(dateString) {
+    try {
+        const date = new Date(dateString);
+        return date.toLocaleDateString('fr-FR');
+    } catch(e) {
+        return dateString;
+    }
+}
+
+function getRepeatLabel(repeat) {
+    const labels = { day: "Jour", daily: "Journalier", monthly: "Mensuel", yearly: "Annuel" };
+    return labels[repeat] || "Aucun";
+}
+
+function shouldDisplayTask(task) {
+    return !task.completed || currentTaskFilter === "done";
+}
+
+function loadTasks() {
+    const taskList = document.getElementById("taskList");
+    taskList.innerHTML = "";
+
+    const filteredTasks = tasks
+        .map((task, index) => ({ task, index }))
+        .filter(({ task }) => matchesFilter(task) && matchesSearch(task) && shouldDisplayTask(task));
+
+    if (filteredTasks.length === 0) {
+        taskList.innerHTML = '<div class="text-center text-muted py-3">Aucune tâche trouvée</div>';
+        return;
+    }
+
+    filteredTasks.forEach(({ task, index }) => {
+        const taskDiv = document.createElement("div");
+        taskDiv.className = "task";
+        if (task.completed) taskDiv.classList.add("completed");
+
+        if (task.repeat === "daily") taskDiv.classList.add("priority-daily");
+        if (task.repeat === "monthly") taskDiv.classList.add("priority-monthly");
+        if (task.repeat === "yearly") taskDiv.classList.add("priority-yearly");
+
+        taskDiv.innerHTML = `
+            <span class="task-text">
+                ${task.text}
+                <span class="task-info">
+                    ${task.dueDate ? `📅 ${formatTaskDate(task.dueDate)} ` : ""}
+                    ${task.repeat ? `🔁 ${getRepeatLabel(task.repeat)}` : ""}
+                    ${task.reminderTime ? `⏰ ${task.reminderTime}` : ""}
+                </span>
+            </span>
+            <div class="buttons">
+                <button onclick="toggleTask(${index})">✅</button>
+                <button onclick="editTask(${index})">✏️</button>
+                <button onclick="deleteTask(${index})">🗑️</button>
+            </div>
+        `;
+
+        taskList.appendChild(taskDiv);
+    });
+    saveTasks();
+}
+
+function backupTasks() {
+    const data = JSON.stringify(tasks, null, 2);
+    const blob = new Blob([data], { type: "application/json" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "taches_backup.json";
+    a.click();
+}
+
+function importBackup() {
+    const input = document.getElementById("backupFileInput");
+    if (!input.files.length) return;
+    const reader = new FileReader();
+    reader.onload = function (e) {
+        try {
+            const importedTasks = JSON.parse(e.target.result);
+            if (Array.isArray(importedTasks)) {
+                tasks = importedTasks;
+                saveTasks();
+                loadTasks();
+                document.getElementById("message").innerText = "✅ Importé avec succès !";
+                setTimeout(() => document.getElementById("message").innerText = "", 3000);
+            } else {
+                throw new Error("Format invalide");
+            }
+        } catch (err) {
+            alert("Erreur d'importation : " + err.message);
+        }
+    };
+    reader.readAsText(input.files[0]);
+}
+
+// ==========================================================
+// VÉRIFICATION DES RAPPELS (Notifications)
+// ==========================================================
+function checkReminders() {
+    const now = new Date();
+    const today = now.toISOString().split("T")[0];
+    const currentHour = now.getHours();
+    const currentMinute = now.getMinutes();
+
+    tasks.forEach(task => {
+        if (task.completed) return;
+        if (!task.reminderTime) return;
+
+        const [hour, minute] = task.reminderTime.split(":").map(Number);
+        if (hour !== currentHour || minute !== currentMinute) return;
+
+        const due = new Date(task.dueDate);
+        let show = false;
+
+        switch(task.repeat) {
+            case "day":
+                show = (task.dueDate === today);
+                break;
+            case "daily":
+                show = true;
+                break;
+            case "monthly":
+                show = due.getDate() === now.getDate();
+                break;
+            case "yearly":
+                show = due.getDate() === now.getDate() && due.getMonth() === now.getMonth();
+                break;
+        }
+
+        if (!show) return;
+
+        const key = today + "_" + currentHour + "_" + currentMinute;
+        if (task.lastReminder === key) return;
+
+        // Notification dans la page
+        showInPageNotification("🔔 Rappel", task.text);
+        task.lastReminder = key;
+        saveTasks();
+    });
+}
+
+function showInPageNotification(title, message) {
+    const container = document.getElementById('notificationContainer');
+    if (!container) return;
+
+    const notif = document.createElement('div');
+    notif.className = 'alert alert-warning alert-dismissible fade show';
+    notif.style.backgroundColor = '#fff3cd';
+    notif.style.borderLeft = '4px solid #ffc107';
+    notif.style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)';
+    notif.innerHTML = `
+        <strong>${title || '🔔 Rappel'}</strong><br>
+        ${message || 'Tâche en attente'}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" onclick="this.parentElement.remove()"></button>
+    `;
+    
+    container.appendChild(notif);
+    
+    setTimeout(() => {
+        if (notif.parentElement) notif.remove();
+    }, 30000);
+}
+
+// ==========================================================
+// INITIALISATION
+// ==========================================================
+document.addEventListener('DOMContentLoaded', function() {
+    // Charger les tâches
+    loadTasks();
+
+    // Vérifier les rappels toutes les 30 secondes
+    setInterval(checkReminders, 30000);
+    setTimeout(checkReminders, 2000);
+
+    // Sauvegarde auto toutes les 6 heures
+    setInterval(() => {
+        backupTasks();
+    }, 6 * 60 * 60 * 1000);
+});
        
     </script>
     <script>
@@ -2259,8 +2880,9 @@ document.getElementById('closePopup').addEventListener('click', function() {
     document.getElementById('popupHaiti').style.display = 'none';
 });
 </script>
+<!-- Zone pour les notifications dans la page -->
+<div id="notificationContainer" class="notification-banner"></div>
 </body>
 </html>
-
 
 
